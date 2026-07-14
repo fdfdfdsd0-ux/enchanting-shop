@@ -161,7 +161,7 @@
         <div class="flex justify-between items-center mb-6 border-b-4 border-[#141515] pb-4">
             <div class="flex items-center gap-3">
                 <h2 class="text-2xl font-bold text-white text-shadow mc-font">Inventory</h2>
-                <button onclick="openProfileModal()" class="text-sm mc-btn px-2 py-1">Edit IGN</button>
+                <button onclick="openProfileModal()" class="text-sm mc-btn px-2 py-1">Edit Info</button>
             </div>
             <button onclick="toggleCart()" class="text-[#a8a8a8] hover:text-white font-bold text-xl font-sans">X</button>
         </div>
@@ -191,7 +191,7 @@
         </div>
 
         <button id="checkout-btn" onclick="initiateCheckout()" class="w-full py-4 text-xl font-bold mc-btn mt-4 tracking-wider mc-font">
-            Copy Order Receipt
+            Checkout Order
         </button>
     </div>
 
@@ -206,23 +206,54 @@
             <label class="block text-lg text-white text-shadow-sm mb-2 mc-font">Minecraft IGN (Required)</label>
             <input type="text" id="modal-name-input" placeholder="Steve" class="w-full mc-input p-3 mb-6 text-xl font-medium">
             
-            <label class="block text-lg text-white text-shadow-sm mb-2 mc-font">Discord (Optional)</label>
+            <label class="block text-lg text-white text-shadow-sm mb-2 mc-font">Discord Handle (Optional)</label>
             <input type="text" id="modal-discord-input" placeholder="@steve" class="w-full mc-input p-3 mb-6 text-xl font-medium">
             
             <button onclick="confirmName()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider">Save Details</button>
         </div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- Status / Loading / Success Modal -->
     <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
         <div class="mc-panel p-6 max-w-lg w-full text-center">
-            <h3 class="text-3xl font-bold text-[#55ff55] text-shadow mb-4 mc-font">Receipt Copied!</h3>
-            <p class="text-lg text-[#d0d0d0] mb-6">Your order details have been copied to your clipboard. Paste them in our Discord channel to complete your purchase!</p>
-            <button onclick="closeCheckoutModal()" class="px-8 py-3 text-xl font-bold mc-btn mc-font tracking-wider">Close</button>
+            <!-- Loading State -->
+            <div id="modal-loading-state" class="hidden">
+                <div class="animate-spin inline-block w-8 h-8 border-4 border-[#a824e3] border-t-transparent rounded-full mb-4"></div>
+                <h3 class="text-2xl font-bold text-white text-shadow mb-2 mc-font">Sending Order...</h3>
+                <p class="text-[#d0d0d0]">Communicating with the secure backend server.</p>
+            </div>
+
+            <!-- Webhook Success State -->
+            <div id="modal-success-state" class="hidden">
+                <h3 class="text-3xl font-bold text-[#55ff55] text-shadow mb-4 mc-font">Order Transmitted!</h3>
+                <p class="text-lg text-[#d0d0d0] mb-6">Your order has been safely sent directly to our staff. You will be messaged when your enchantments are ready!</p>
+                <button onclick="closeCheckoutModal()" class="px-8 py-3 text-xl font-bold mc-btn mc-font tracking-wider">Perfect!</button>
+            </div>
+
+            <!-- Fallback Success State (Clipboard Copy) -->
+            <div id="modal-fallback-state" class="hidden">
+                <h3 class="text-3xl font-bold text-[#55ff55] text-shadow mb-4 mc-font">Receipt Copied!</h3>
+                <p class="text-lg text-[#d0d0d0] mb-6">Because no server was detected, your receipt has been copied to your clipboard. Paste it in our Discord channel to complete your order!</p>
+                <button onclick="closeCheckoutModal()" class="px-8 py-3 text-xl font-bold mc-btn mc-font tracking-wider">Got It!</button>
+            </div>
+
+            <!-- Error State -->
+            <div id="modal-error-state" class="hidden">
+                <h3 class="text-3xl font-bold text-[#ff5555] text-shadow mb-4 mc-font">Transmission Failed</h3>
+                <p class="text-lg text-[#d0d0d0] mb-6">We couldn't connect to the secure server. No worries! We have copied your order receipt to your clipboard instead.</p>
+                <button onclick="closeCheckoutModal()" class="px-8 py-3 text-xl font-bold mc-btn mc-font tracking-wider">Close & Paste</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // SECURE BACKEND SETUP: 
+        // Once you deploy your Cloudflare Worker, paste its URL below!
+        // Example: const BACKEND_URL = "https://your-worker.your-subdomain.workers.dev";
+        // ==========================================
+        const BACKEND_URL = "https://minecraft-shop-backend.fdfdfdsd0.workers.dev/"; 
+
         const storeData = [
             { 
                 category: "Armor", 
@@ -281,7 +312,7 @@
         let cart = [];
         const MAX_DAILY_ITEMS = 8;
 
-        // Minecraft dynamic colors
+        // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
             const mat = material.toLowerCase();
             if (mat.includes('diamond')) return '#55ffff'; // Aqua
@@ -295,6 +326,7 @@
             return '#d0d0d0';
         }
 
+        // Calculates sum totals of each currency block
         function calculateTotal() {
             const totals = {};
             let shippingFee = cart.length; 
@@ -323,6 +355,7 @@
             return totals;
         }
 
+        // Limit management
         function getDailyOrderData() {
             const today = new Date().toLocaleDateString();
             const storedDate = localStorage.getItem('lastOrderDate');
@@ -349,7 +382,6 @@
                     const card = document.createElement('div');
                     card.className = 'mc-panel p-5 flex flex-col';
                     
-                    // Generate blocky enchantment tier buttons
                     const tierButtons = item.cost.split(', ').map(c => {
                         const parts = c.split(':');
                         const tier = parts[0];
@@ -380,7 +412,7 @@
             const { ordersToday } = getDailyOrderData();
             
             if (ordersToday + cart.length >= MAX_DAILY_ITEMS) {
-                alert(`Daily limit reached! You can only order a maximum of ${MAX_DAILY_ITEMS} items per day.`);
+                showSimpleMessage(`Daily limit reached! You can only order a maximum of ${MAX_DAILY_ITEMS} items per day.`);
                 return;
             }
 
@@ -498,19 +530,19 @@
                     processCheckout(name);
                 }
             } else {
-                alert("Please enter your Minecraft IGN!");
+                showSimpleMessage("Please enter your Minecraft IGN!");
             }
         }
 
-        function processCheckout(name) {
+        async function processCheckout(name) {
             if (cart.length === 0) {
-                alert("Your inventory is empty!");
+                showSimpleMessage("Your inventory is empty!");
                 return;
             }
 
             const { today, ordersToday } = getDailyOrderData();
             if (ordersToday + cart.length > MAX_DAILY_ITEMS) {
-                alert(`Cannot proceed. This exceeds your daily limit of ${MAX_DAILY_ITEMS} items.`);
+                showSimpleMessage(`Cannot proceed. This exceeds your daily limit of ${MAX_DAILY_ITEMS} items.`);
                 return;
             }
 
@@ -525,31 +557,114 @@
             
             const receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
-            // Copy to clipboard safely
+            // Display loading modal if we have a backend URL
+            const modal = document.getElementById('checkout-modal');
+            const loadingState = document.getElementById('modal-loading-state');
+            const successState = document.getElementById('modal-success-state');
+            const fallbackState = document.getElementById('modal-fallback-state');
+            const errorState = document.getElementById('modal-error-state');
+
+            // Reset modal states
+            loadingState.classList.add('hidden');
+            successState.classList.add('hidden');
+            fallbackState.classList.add('hidden');
+            errorState.classList.add('hidden');
+            modal.classList.remove('hidden');
+
+            if (BACKEND_URL && BACKEND_URL.trim() !== "") {
+                loadingState.classList.remove('hidden');
+                
+                try {
+                    const response = await fetch(BACKEND_URL.replace(/\/$/, "") + "/api/checkout", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            customer: name,
+                            discord: discordName,
+                            items: cart,
+                            total: totalString,
+                            shippingFee: fee,
+                            rawContent: receiptText
+                        })
+                    });
+
+                    loadingState.classList.add('hidden');
+
+                    if (response.ok) {
+                        successState.classList.remove('hidden');
+                        saveOrderCount(today, ordersToday);
+                        cart = [];
+                        updateCart();
+                        if (!document.getElementById('cart-drawer').classList.contains('translate-x-full')) {
+                            toggleCart();
+                        }
+                    } else {
+                        // Backend returned non-200, fallback to clipboard
+                        copyTextToClipboard(receiptText);
+                        errorState.classList.remove('hidden');
+                        saveOrderCount(today, ordersToday);
+                        cart = [];
+                        updateCart();
+                        if (!document.getElementById('cart-drawer').classList.contains('translate-x-full')) {
+                            toggleCart();
+                        }
+                    }
+                } catch (err) {
+                    // Fail/Network issue, fallback to clipboard
+                    loadingState.classList.add('hidden');
+                    copyTextToClipboard(receiptText);
+                    errorState.classList.remove('hidden');
+                    saveOrderCount(today, ordersToday);
+                    cart = [];
+                    updateCart();
+                    if (!document.getElementById('cart-drawer').classList.contains('translate-x-full')) {
+                        toggleCart();
+                    }
+                }
+            } else {
+                // No backend configured, use safe fallback clipboard copy instantly
+                copyTextToClipboard(receiptText);
+                fallbackState.classList.remove('hidden');
+                saveOrderCount(today, ordersToday);
+                cart = [];
+                updateCart();
+                if (!document.getElementById('cart-drawer').classList.contains('translate-x-full')) {
+                    toggleCart();
+                }
+            }
+        }
+
+        function saveOrderCount(today, ordersToday) {
+            localStorage.setItem('lastOrderDate', today);
+            localStorage.setItem('ordersToday', ordersToday + cart.length);
+        }
+
+        // Clipboard management workaround
+        function copyTextToClipboard(text) {
             const dummyTextArea = document.createElement("textarea");
             document.body.appendChild(dummyTextArea);
-            dummyTextArea.value = receiptText;
+            dummyTextArea.value = text;
             dummyTextArea.select();
             document.execCommand("copy");
             document.body.removeChild(dummyTextArea);
-
-            // Save new order count
-            localStorage.setItem('lastOrderDate', today);
-            localStorage.setItem('ordersToday', ordersToday + cart.length);
-
-            cart = [];
-            updateCart();
-            toggleCart();
-            
-            // Show Success Modal
-            document.getElementById('checkout-modal').classList.remove('hidden');
         }
 
         function closeCheckoutModal() {
             document.getElementById('checkout-modal').classList.add('hidden');
         }
 
-        // Init
+        // Custom clean notification helper instead of using browser alerts
+        function showSimpleMessage(message) {
+            const alertBox = document.createElement('div');
+            alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full';
+            alertBox.innerHTML = `
+                <p class="mb-3 font-semibold">${message}</p>
+                <button onclick="this.parentElement.remove()" class="mc-btn px-4 py-1 text-sm font-bold">OK</button>
+            `;
+            document.body.appendChild(alertBox);
+        }
+
+        // Init Menu System
         const catList = document.getElementById('category-list');
         const mobileCatList = document.getElementById('mobile-category-list');
         
