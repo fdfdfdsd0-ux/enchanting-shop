@@ -218,6 +218,54 @@
         <span id="overstock-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
     </div>
 
+    <!-- Nether Sale Banner -->
+    <div id="nether-sale-banner" class="hidden bg-gradient-to-r from-red-800 to-orange-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-900 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">🔥 NETHER EVENT! 50% OFF FIRE ENCHANTS! 🔥</span>
+        <span id="nether-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Anti-Meta Sale Banner -->
+    <div id="antimeta-sale-banner" class="hidden bg-gradient-to-r from-purple-800 to-green-700 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-900 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">🕷️ ANTI-META BLOWOUT! 75% OFF SELECT ENCHANTS! 🕷️</span>
+        <span id="antimeta-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Bulk Bonus Banner -->
+    <div id="bulk-sale-banner" class="hidden bg-gradient-to-r from-yellow-600 to-lime-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-yellow-800 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">🛒 BULK BONUS! 50% OFF ENTIRE ORDER (MIN 5 ITEMS)! 🛒</span>
+        <span id="bulk-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Buy 2 Get 1 Free Banner -->
+    <div id="b2g1-sale-banner" class="hidden bg-gradient-to-r from-pink-500 to-rose-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-pink-800 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">🛍️ BUY 2 GET 1 FREE! (CHEAPEST ITEMS ARE FREE) 🛍️</span>
+        <span id="b2g1-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Flat Rate Diamond Banner -->
+    <div id="flatrate-sale-banner" class="hidden bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-cyan-800 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">💎 ABSOLUTE MADNESS! EVERY ITEM COSTS EXACTLY 1 DIAMOND! 💎</span>
+        <span id="flatrate-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- S-Tier Banner -->
+    <div id="stier-sale-banner" class="hidden bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-800 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">🔥 S-TIER MADNESS! ENCHANTS STARTING WITH 'S' ARE 90% OFF! 🔥</span>
+        <span id="stier-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Progressive Banner -->
+    <div id="progressive-sale-banner" class="hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-900 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-bounce inline-block">📈 PROGRESSIVE OVERLOAD! +10% OFF PER ITEM IN CART! 📈</span>
+        <span id="progressive-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
+    <!-- Peasant Uprising Banner -->
+    <div id="peasant-sale-banner" class="hidden bg-gradient-to-r from-gray-700 via-amber-800 to-gray-700 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">⛏️ PEASANT UPRISING! COAL, COPPER, & IRON ITEMS ARE 100% FREE! ⛏️</span>
+        <span id="peasant-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
         <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee of 1 Emerald per item. (Limit 8 items per day)
@@ -415,6 +463,24 @@
                     <button onclick="adminStartMaxTierSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aa00aa]">🔥 Max Tier Madness</button>
                     <button onclick="adminStartOverstockSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#00aa00]">📦 Overstock Sale</button>
                 </div>
+
+                <!-- Special Themed Events -->
+                <div class="border-t-2 border-[#535456] pt-4 mt-4 grid grid-cols-1 gap-4 pb-4">
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Special Themed Events</h4>
+                    <button onclick="adminStartNetherSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">🔥 Start Nether Event</button>
+                    <button onclick="adminStartAntiMetaSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aa00aa]">🕷️ Start Anti-Meta Sale</button>
+                    <button onclick="adminStartBulkSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffff55]">🛒 Start Bulk Bonus</button>
+                    <button onclick="adminStartB2G1Sale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">🛍️ Start Buy 2 Get 1 Free</button>
+                </div>
+                
+                <!-- Crazy Events -->
+                <div class="border-t-2 border-[#535456] pt-4 mt-4 grid grid-cols-1 gap-4 pb-4">
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Crazy & Chaotic Events</h4>
+                    <button onclick="adminStartFlatRateSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ffff]">💎 1 Diamond Flat Rate</button>
+                    <button onclick="adminStartSTierSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffaa00]">🔥 S-Tier Madness (90% Off)</button>
+                    <button onclick="adminStartProgressiveSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">📈 Progressive Overload</button>
+                    <button onclick="adminStartPeasantSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aaaaaa]">⛏️ Peasant Uprising (Free)</button>
+                </div>
             </div>
         </div>
     </div>
@@ -542,6 +608,14 @@
                 i.isTier1Discounted = false;
                 i.isMaxTierDiscounted = false;
                 i.isOverstockDiscounted = false;
+                i.isNetherDiscounted = false;
+                i.isAntiMetaDiscounted = false;
+                i.isBulkDiscounted = false;
+                i.isB2G1Discounted = false;
+                i.isFlatRateDiscounted = false;
+                i.isSTierDiscounted = false;
+                i.isProgressiveDiscounted = false;
+                i.isPeasantDiscounted = false;
             });
 
             // --- Dynamic Multi-Sale Evaluation (Applies if Flash Sale is NOT active) ---
@@ -563,7 +637,42 @@
                     if (window.isTier1SaleActive && tier === 'I') item.isTier1Discounted = true;
                     if (window.isMaxTierSaleActive && (tier === 'IV' || tier === 'V')) item.isMaxTierDiscounted = true;
                     if (window.isOverstockSaleActive && inStockItems.includes(`${item.name} ${tier}`)) item.isOverstockDiscounted = true;
+                    
+                    if (window.isNetherSaleActive && ['Fire Protection', 'Fire Aspect', 'Flame'].includes(item.name)) item.isNetherDiscounted = true;
+                    if (window.isAntiMetaSaleActive && ['Smite', 'Bane of Arthropods', 'Knockback', 'Punch', 'Lure', 'Thorns'].includes(item.name)) item.isAntiMetaDiscounted = true;
+                    
+                    // Crazy Overrides
+                    if (window.isFlatRateDiamondActive) item.isFlatRateDiscounted = true;
+                    if (window.isSTierMadnessActive && item.name.startsWith('S')) item.isSTierDiscounted = true;
+                    if (window.isPeasantUprisingActive && ['Coal', 'Copper', 'Iron'].includes(mat)) item.isPeasantDiscounted = true;
+                    if (window.isProgressiveOverloadActive) item.isProgressiveDiscounted = true;
                 });
+                
+                // Bulk Buyer Bonus Check
+                if (window.isBulkSaleActive && cart.length >= 5) {
+                    cart.forEach(item => item.isBulkDiscounted = true);
+                }
+
+                // Buy 2 Get 1 Free Check
+                if (window.isB2G1SaleActive) {
+                    let freeCredits = Math.floor(cart.length / 3);
+                    let eligibleItems = cart.map((item, index) => ({ item, index }));
+                        
+                    eligibleItems.forEach(obj => {
+                        const priceStr = obj.item.price.split(':')[1] || obj.item.price;
+                        obj.parsedAmount = parseInt(priceStr.trim().split(' ')[0]) || 0;
+                    });
+                    // Sort ascending to make the cheapest items free
+                    eligibleItems.sort((a, b) => a.parsedAmount - b.parsedAmount);
+                    
+                    let discountsApplied = 0;
+                    for (let obj of eligibleItems) {
+                        if (discountsApplied < freeCredits) {
+                            cart[obj.index].isB2G1Discounted = true;
+                            discountsApplied++;
+                        }
+                    }
+                }
             }
 
             // --- Calculate BOGO (Applies if Flash Sale is NOT active) ---
@@ -607,12 +716,29 @@
                         if (window.isFlashSaleCurrentlyActive) {
                             finalAmount = Math.max(1, Math.ceil(amount / 2)); 
                         } 
+                        // --- CRAZY OVERRIDES ---
+                        else if (item.isFlatRateDiscounted) {
+                            finalAmount = 1;
+                            material = "Diamonds"; // Override material cost entirely!
+                        }
+                        // --- 100% OFF DISCOUNTS ---
+                        else if (item.isB2G1Discounted || item.isPeasantDiscounted) {
+                            finalAmount = 0; 
+                        }
+                        // --- 90% OFF DISCOUNTS ---
+                        else if (item.isSTierDiscounted) {
+                            finalAmount = Math.max(1, Math.ceil(amount * 0.10));
+                        }
                         // --- 75% OFF DISCOUNTS ---
-                        else if (item.isBogoDiscounted || item.isTier1Discounted) {
+                        else if (item.isBogoDiscounted || item.isTier1Discounted || item.isAntiMetaDiscounted) {
                             finalAmount = Math.max(1, Math.ceil(amount * 0.25)); 
                         }
+                        // --- DYNAMIC SCALING DISCOUNTS ---
+                        else if (item.isProgressiveDiscounted) {
+                            finalAmount = Math.max(1, Math.ceil(amount * (1 - (cart.length * 0.10))));
+                        }
                         // --- 50% OFF DISCOUNTS ---
-                        else if (item.isArmorDiscounted || item.isWeaponDiscounted || item.isRangedDiscounted || item.isToolDiscounted || item.isDiamondDiscounted || item.isGoldDiscounted || item.isIronDiscounted || item.isLapisDiscounted || item.isMaxTierDiscounted || item.isOverstockDiscounted) {
+                        else if (item.isArmorDiscounted || item.isWeaponDiscounted || item.isRangedDiscounted || item.isToolDiscounted || item.isDiamondDiscounted || item.isGoldDiscounted || item.isIronDiscounted || item.isLapisDiscounted || item.isMaxTierDiscounted || item.isOverstockDiscounted || item.isNetherDiscounted || item.isBulkDiscounted) {
                             finalAmount = Math.max(1, Math.ceil(amount / 2));
                         }
                         
@@ -721,18 +847,43 @@
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt / 2));
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">Flash: ${discountedAmt} ${mat}</span>`;
+                } else if (i.isB2G1Discounted) {
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff55ff]">B2G1: FREE</span>`;
+                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#ff55ff] text-black px-1.5 py-0.5 border border-[#aa22aa] shadow-sm uppercase font-bold tracking-widest">100% OFF</span>`;
+                } else if (i.isAntiMetaDiscounted) {
+                     const amt = parseInt(priceText.split(' ')[0]);
+                     const mat = priceText.split(' ').slice(1).join(' ');
+                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#aa00aa]">Anti-Meta: ${discountedAmt} ${mat}</span>`;
                 } else if (i.isTier1Discounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff5555]">Tier I Blowout: ${discountedAmt} ${mat}</span>`;
+                } else if (i.isFlatRateDiscounted) {
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ffff]">Flat Rate: 1 Diamond</span>`;
+                } else if (i.isPeasantDiscounted) {
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#aaaaaa]">Peasant Uprising: FREE</span>`;
+                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#aaaaaa] text-black px-1.5 py-0.5 border border-[#555555] shadow-sm uppercase font-bold tracking-widest">100% OFF</span>`;
+                } else if (i.isSTierDiscounted) {
+                     const amt = parseInt(priceText.split(' ')[0]);
+                     const mat = priceText.split(' ').slice(1).join(' ');
+                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.10));
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">S-Tier: ${discountedAmt} ${mat}</span>`;
+                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#ffaa00] text-black px-1.5 py-0.5 border border-[#aa5500] shadow-sm uppercase font-bold tracking-widest">90% OFF</span>`;
+                } else if (i.isProgressiveDiscounted) {
+                     const amt = parseInt(priceText.split(' ')[0]);
+                     const mat = priceText.split(' ').slice(1).join(' ');
+                     const percentOff = cart.length * 10;
+                     const discountedAmt = Math.max(1, Math.ceil(amt * (1 - (cart.length * 0.10))));
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff5555]">Scaling (-${percentOff}%): ${discountedAmt} ${mat}</span>`;
                 } else if (i.isBogoDiscounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ff55]">BOGO: ${discountedAmt} ${mat}</span>`;
                      bogoBadge = `<span class="ml-2 text-[10px] bg-[#55ff55] text-black px-1.5 py-0.5 border border-[#22aa22] shadow-sm uppercase font-bold tracking-widest">75% OFF</span>`;
-                } else if (i.isArmorDiscounted || i.isWeaponDiscounted || i.isRangedDiscounted || i.isToolDiscounted || i.isDiamondDiscounted || i.isGoldDiscounted || i.isIronDiscounted || i.isLapisDiscounted || i.isMaxTierDiscounted || i.isOverstockDiscounted) {
+                } else if (i.isArmorDiscounted || i.isWeaponDiscounted || i.isRangedDiscounted || i.isToolDiscounted || i.isDiamondDiscounted || i.isGoldDiscounted || i.isIronDiscounted || i.isLapisDiscounted || i.isMaxTierDiscounted || i.isOverstockDiscounted || i.isNetherDiscounted || i.isBulkDiscounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt / 2));
@@ -748,6 +899,8 @@
                      else if(i.isLapisDiscounted) label = "Lapis Liquidation";
                      else if(i.isMaxTierDiscounted) label = "Max Tier Madness";
                      else if(i.isOverstockDiscounted) label = "Overstock Sale";
+                     else if(i.isNetherDiscounted) label = "Nether Event";
+                     else if(i.isBulkDiscounted) label = "Bulk Bonus";
 
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ffff]">${label}: ${discountedAmt} ${mat}</span>`;
                 }
@@ -931,7 +1084,15 @@
                     { state: window.isLapisSaleActive, flag: 'isLapisDiscounted', emoji: '🔷', name: 'LAPIS LIQUIDATION', off: '50%' },
                     { state: window.isTier1SaleActive, flag: 'isTier1Discounted', emoji: '💥', name: 'TIER I BLOWOUT', off: '75%' },
                     { state: window.isMaxTierSaleActive, flag: 'isMaxTierDiscounted', emoji: '🔥', name: 'MAX TIER MADNESS', off: '50%' },
-                    { state: window.isOverstockSaleActive, flag: 'isOverstockDiscounted', emoji: '📦', name: 'OVERSTOCK SALE', off: '50%' }
+                    { state: window.isOverstockSaleActive, flag: 'isOverstockDiscounted', emoji: '📦', name: 'OVERSTOCK SALE', off: '50%' },
+                    { state: window.isNetherSaleActive, flag: 'isNetherDiscounted', emoji: '🔥', name: 'NETHER EXPLORER EVENT', off: '50%' },
+                    { state: window.isAntiMetaSaleActive, flag: 'isAntiMetaDiscounted', emoji: '🕷️', name: 'ANTI-META BLOWOUT', off: '75%' },
+                    { state: window.isBulkSaleActive, flag: 'isBulkDiscounted', emoji: '🛒', name: 'BULK BUYER BONUS', off: '50%' },
+                    { state: window.isB2G1SaleActive, flag: 'isB2G1Discounted', emoji: '🛍️', name: 'BUY 2 GET 1 FREE', off: '100%' },
+                    { state: window.isFlatRateDiamondActive, flag: 'isFlatRateDiscounted', emoji: '💎', name: '1 DIAMOND FLAT RATE', off: 'Converted Pricing' },
+                    { state: window.isSTierMadnessActive, flag: 'isSTierDiscounted', emoji: '🔥', name: 'S-TIER MADNESS', off: '90%' },
+                    { state: window.isProgressiveOverloadActive, flag: 'isProgressiveDiscounted', emoji: '📈', name: 'PROGRESSIVE OVERLOAD', off: `${cart.length * 10}%` },
+                    { state: window.isPeasantUprisingActive, flag: 'isPeasantDiscounted', emoji: '⛏️', name: 'PEASANT UPRISING', off: '100%' }
                 ];
 
                 activeNewSales.forEach(s => {
@@ -1275,7 +1436,15 @@
             { id: 'Lapis', name: 'Lapis Liquidation', emoji: '🔷', msg: 'All Lapis costs are 50% OFF! Hurry!', state: 'isLapisSaleActive', end: 'manualLapisSaleEndTime', banner: 'lapis-sale-banner', timer: 'lapis-sale-timer' },
             { id: 'Tier1', name: 'Tier I Blowout', emoji: '💥', msg: 'All Tier I enchants are 75% OFF! Hurry!', state: 'isTier1SaleActive', end: 'manualTier1SaleEndTime', banner: 'tier1-sale-banner', timer: 'tier1-sale-timer' },
             { id: 'MaxTier', name: 'Max Tier Madness', emoji: '🔥', msg: 'All Tier IV & V enchants are 50% OFF! Hurry!', state: 'isMaxTierSaleActive', end: 'manualMaxTierSaleEndTime', banner: 'maxtier-sale-banner', timer: 'maxtier-sale-timer' },
-            { id: 'Overstock', name: 'Overstock Sale', emoji: '📦', msg: 'All In-Stock enchants are 50% OFF! Hurry!', state: 'isOverstockSaleActive', end: 'manualOverstockSaleEndTime', banner: 'overstock-sale-banner', timer: 'overstock-sale-timer' }
+            { id: 'Overstock', name: 'Overstock Sale', emoji: '📦', msg: 'All In-Stock enchants are 50% OFF! Hurry!', state: 'isOverstockSaleActive', end: 'manualOverstockSaleEndTime', banner: 'overstock-sale-banner', timer: 'overstock-sale-timer' },
+            { id: 'Nether', name: 'Nether Explorer Event', emoji: '🔥', msg: 'Fire Protection, Fire Aspect, and Flame are 50% OFF!', state: 'isNetherSaleActive', end: 'manualNetherSaleEndTime', banner: 'nether-sale-banner', timer: 'nether-sale-timer' },
+            { id: 'AntiMeta', name: 'Anti-Meta Blowout', emoji: '🕷️', msg: 'Smite, Bane of Arthropods, Knockback, Punch, Lure, and Thorns are 75% OFF!', state: 'isAntiMetaSaleActive', end: 'manualAntiMetaSaleEndTime', banner: 'antimeta-sale-banner', timer: 'antimeta-sale-timer' },
+            { id: 'Bulk', name: 'Bulk Buyer Bonus', emoji: '🛒', msg: 'Buy 5 or more items to get 50% OFF your entire order!', state: 'isBulkSaleActive', end: 'manualBulkSaleEndTime', banner: 'bulk-sale-banner', timer: 'bulk-sale-timer' },
+            { id: 'B2G1', name: 'Buy 2 Get 1 FREE', emoji: '🛍️', msg: 'For every 3 items, the cheapest 1 is absolutely FREE!', state: 'isB2G1SaleActive', end: 'manualB2G1SaleEndTime', banner: 'b2g1-sale-banner', timer: 'b2g1-sale-timer' },
+            { id: 'FlatRate', name: '1 Diamond Flat Rate', emoji: '💎', msg: 'Absolute Madness! EVERY item in the store costs exactly 1 Diamond!', state: 'isFlatRateDiamondActive', end: 'manualFlatRateDiamondEndTime', banner: 'flatrate-sale-banner', timer: 'flatrate-sale-timer' },
+            { id: 'STier', name: 'S-Tier Madness', emoji: '🔥', msg: 'Sharpness, Smite, Sweeping Edge, Silk Touch, Swift Sneak... If it starts with S, it\'s 90% OFF!', state: 'isSTierMadnessActive', end: 'manualSTierMadnessEndTime', banner: 'stier-sale-banner', timer: 'stier-sale-timer' },
+            { id: 'Progressive', name: 'Progressive Overload', emoji: '📈', msg: '1 item = 10% off. 8 items = 80% off your ENTIRE order! Add more to save more!', state: 'isProgressiveOverloadActive', end: 'manualProgressiveOverloadEndTime', banner: 'progressive-sale-banner', timer: 'progressive-sale-timer' },
+            { id: 'Peasant', name: 'Peasant Uprising', emoji: '⛏️', msg: 'Power to the players! All enchantments costing Coal, Copper, or Iron are 100% FREE!', state: 'isPeasantUprisingActive', end: 'manualPeasantUprisingEndTime', banner: 'peasant-sale-banner', timer: 'peasant-sale-timer' }
         ];
 
         newSalesConfig.forEach(s => {
