@@ -134,6 +134,12 @@
         </div>
     </header>
 
+    <!-- Flash Sale Banner (Hidden by default) -->
+    <div id="flash-sale-banner" class="hidden bg-gradient-to-r from-red-600 to-yellow-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-800 z-40 relative">
+        <span class="mc-font text-xl text-shadow animate-pulse">⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡</span>
+        <span id="flash-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
+    </div>
+
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
         <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee of 1 Emerald per item. (Limit 8 items per day)
@@ -267,6 +273,7 @@
         // SECURE BACKEND SETUP: 
         // ==========================================
         const BACKEND_URL = "https://minecraft-shop-backend.fdfdfdsd0.workers.dev/"; 
+        const FLASH_SALE_WEBHOOK = "https://discord.com/api/webhooks/1527002711105732648/Dy5RIBLB54qy6Y98-nTtgw_Kwp_x2K63VJyclJxlFiRc84sWHk9LGZ4ifsR7I8FvXoGR";
 
         // ==========================================
         // INVENTORY TRACKER:
@@ -339,6 +346,7 @@
 
         let cart = [];
         const MAX_DAILY_ITEMS = 8;
+        let isFlashSaleCurrentlyActive = false;
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -376,6 +384,14 @@
                     }
                 }
             });
+
+            // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
+            if (isFlashSaleCurrentlyActive) {
+                for (let mat in totals) {
+                    // Halve the cost, rounding up so there's always a min cost of 1
+                    totals[mat] = Math.max(1, Math.ceil(totals[mat] / 2)); 
+                }
+            }
 
             if (shippingFee > 0) {
                 totals['Emeralds'] = (totals['Emeralds'] || 0) + shippingFee;
@@ -606,7 +622,11 @@
             const itemList = cart.map(i => `- **${i.name}** (${i.price})`).join('\n');
             const fee = cart.length;
             
-            const receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
+            let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
+
+            if (isFlashSaleCurrentlyActive) {
+                receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
+            }
 
             const modal = document.getElementById('checkout-modal');
             const loadingState = document.getElementById('modal-loading-state');
@@ -768,6 +788,135 @@
 
         setInterval(spawnEnchantmentDust, 300);
         
+        // ==========================================
+        // FLASH SALE LOGIC
+        // ==========================================
+        function getFlashSaleWindow() {
+            const now = new Date();
+            // Start of current week (Sunday 00:00)
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            const seed = startOfWeek.getTime();
+            
+            // Simple deterministic random generator based on the week's seed
+            const random = (s) => {
+                let x = Math.sin(s++) * 10000;
+                return x - Math.floor(x);
+            };
+
+            const dayOffset = Math.floor(random(seed) * 7); // 0-6 (Sun-Sat)
+            const hourOffset = Math.floor(random(seed + 1) * 14) + 7; // 7 to 20 (7 AM to 8:55 PM start times)
+            const minuteOffset = Math.floor(random(seed + 2) * 55); // 0-54 mins (leaving 5 min room)
+
+            const start = new Date(startOfWeek.getTime());
+            start.setDate(start.getDate() + dayOffset);
+            start.setHours(hourOffset, minuteOffset, 0, 0);
+
+            const end = new Date(start.getTime() + 5 * 60 * 1000); // exactly 5 minutes later
+            
+            return { start, end, weekId: seed };
+        }
+
+        function checkFlashSale() {
+            const window = getFlashSaleWindow();
+            const now = new Date();
+            
+            if (now >= window.start && now < window.end) {
+                if (!isFlashSaleCurrentlyActive) {
+                    isFlashSaleCurrentlyActive = true;
+                    document.getElementById('flash-sale-banner').classList.remove('hidden');
+                    updateCart(); // Refresh cart UI to show halved prices
+                    
+                    // Announce to Webhook (Uses localStorage to only trigger once per device)
+                    const announcedKey = 'fs_announced_' + window.weekId;
+                    if (!localStorage.getItem(announcedKey)) {
+                        localStorage.setItem(announcedKey, 'true');
+                        fetch(FLASH_SALE_WEBHOOK, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                content: "⚡ **FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                            })
+                        }).catch(err => console.log("Webhook error:", err));
+                    }
+                }
+                
+                // Update countdown timer
+                const MathFloor = Math.floor;
+                const timeLeft = MathFloor((window.end - now) / 1000);
+                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
+                const secs = String(timeLeft % 60).padStart(2, '0');
+                document.getElementById('flash-sale-timer').innerText = `${mins}:${secs}`;
+                
+            } else {
+                if (isFlashSaleCurrentlyActive) {
+                    isFlashSaleCurrentlyActive = false;
+                    document.getElementById('flash-sale-banner').classList.add('hidden');
+                    updateCart(); // Reset cart UI to normal prices
+                }
+            }
+        }
+
+        // Start checking for flash sales every second
+        setInterval(checkFlashSale, 1000);
+        checkFlashSale(); // Initial check
+
+        // ==========================================
+        // SECRET TEST WEBHOOK TRIGGER (Easter Egg)
+        // ==========================================
+        let keyBuffer = "";
+        const SECRET_CODE = "07312012";
+
+        document.addEventListener('keydown', (e) => {
+            // Only listen to single characters to build the code
+            if (e.key.length === 1) {
+                keyBuffer += e.key;
+                
+                // Keep the memory buffer small
+                if (keyBuffer.length > 20) {
+                    keyBuffer = keyBuffer.slice(-20);
+                }
+                
+                // If the user types the secret code
+                if (keyBuffer.includes(SECRET_CODE)) {
+                    keyBuffer = ""; // Reset buffer so it doesn't trigger twice
+                    triggerTestWebhooks();
+                }
+            }
+        });
+
+        async function triggerTestWebhooks() {
+            showSimpleMessage("Secret code activated! Sending 'test' to both webhooks...");
+            
+            // 1. Send to the Flash Sale Webhook directly
+            try {
+                fetch(FLASH_SALE_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: "test" })
+                });
+            } catch (err) {
+                console.error("Flash webhook test failed:", err);
+            }
+
+            // 2. Send to the Cloudflare Backend Proxy
+            if (BACKEND_URL && BACKEND_URL.trim() !== "") {
+                try {
+                    fetch(BACKEND_URL.replace(/\/$/, "") + "/api/checkout", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                            // The worker expects 'rawContent' to forward to Discord
+                            rawContent: "test" 
+                        })
+                    });
+                } catch (err) {
+                    console.error("Checkout backend test failed:", err);
+                }
+            }
+        }
+
     </script>
 </body>
 </html>
