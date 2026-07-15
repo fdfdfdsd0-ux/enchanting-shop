@@ -268,26 +268,8 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Connect to your specific Firebase Project
-        const firebaseConfig = {
-            apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
-            authDomain: "weblox-1f8b0.firebaseapp.com",
-            projectId: "weblox-1f8b0",
-            storageBucket: "weblox-1f8b0.firebasestorage.app",
-            messagingSenderId: "765567900101",
-            appId: "1:765567900101:web:fa03494970c3019f1e93ac",
-            measurementId: "G-D7E2MT985J"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
+    <!-- Core UI Script (Loads instantly, even offline or locally) -->
+    <script>
         // ==========================================
         // SECURE BACKEND SETUP: 
         // ==========================================
@@ -363,10 +345,11 @@
             }
         ];
 
-        window.cart = []; // Exposes cart so HTML buttons can still find it
+        window.cart = []; 
         let cart = window.cart;
         const MAX_DAILY_ITEMS = 8;
-        let isFlashSaleCurrentlyActive = false;
+        window.isFlashSaleCurrentlyActive = false;
+        window.manualFlashSaleEndTime = null;
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -406,7 +389,7 @@
             });
 
             // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
-            if (isFlashSaleCurrentlyActive) {
+            if (window.isFlashSaleCurrentlyActive) {
                 for (let mat in totals) {
                     // Halve the cost, rounding up so there's always a min cost of 1
                     totals[mat] = Math.max(1, Math.ceil(totals[mat] / 2)); 
@@ -581,7 +564,10 @@
         }
 
         function filterCategory(cat) {
-            const query = document.getElementById('search-input').value || document.getElementById('search-input-mobile').value;
+            const searchInput = document.getElementById('search-input');
+            const searchMobile = document.getElementById('search-input-mobile');
+            const query = (searchInput ? searchInput.value : '') || (searchMobile ? searchMobile.value : '');
+            
             renderProducts(cat, query);
             
             document.querySelectorAll('#category-list button').forEach(b => {
@@ -644,7 +630,7 @@
             
             let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
-            if (isFlashSaleCurrentlyActive) {
+            if (window.isFlashSaleCurrentlyActive) {
                 receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
             }
 
@@ -811,7 +797,6 @@
         // ==========================================
         // FLASH SALE LOGIC
         // ==========================================
-        let manualFlashSaleEndTime = null;
 
         function getFlashSaleWindow() {
             const now = new Date();
@@ -841,20 +826,20 @@
         }
 
         function checkFlashSale() {
-            const window = getFlashSaleWindow();
+            const windowData = getFlashSaleWindow();
             const now = new Date();
             
-            const isScheduledActive = now >= window.start && now < window.end;
-            const isManualActive = manualFlashSaleEndTime && now < manualFlashSaleEndTime;
+            const isScheduledActive = now >= windowData.start && now < windowData.end;
+            const isManualActive = window.manualFlashSaleEndTime && now < window.manualFlashSaleEndTime;
             
             if (isScheduledActive || isManualActive) {
-                if (!isFlashSaleCurrentlyActive) {
-                    isFlashSaleCurrentlyActive = true;
+                if (!window.isFlashSaleCurrentlyActive) {
+                    window.isFlashSaleCurrentlyActive = true;
                     document.getElementById('flash-sale-banner').classList.remove('hidden');
-                    updateCart(); // Refresh cart UI to show halved prices
+                    updateCart(); 
                     
                     // Announce to Webhook (Uses localStorage to only trigger once per device)
-                    const eventId = isManualActive ? 'manual_' + manualFlashSaleEndTime.getTime() : 'auto_' + window.weekId;
+                    const eventId = isManualActive ? 'manual_' + window.manualFlashSaleEndTime.getTime() : 'auto_' + windowData.weekId;
                     const announcedKey = 'fs_announced_' + eventId;
                     
                     if (!localStorage.getItem(announcedKey)) {
@@ -870,7 +855,7 @@
                 }
                 
                 // Update countdown timer
-                const activeEndTime = isManualActive ? manualFlashSaleEndTime : window.end;
+                const activeEndTime = isManualActive ? window.manualFlashSaleEndTime : windowData.end;
                 const MathFloor = Math.floor;
                 const timeLeft = MathFloor((activeEndTime - now) / 1000);
                 const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
@@ -878,10 +863,10 @@
                 document.getElementById('flash-sale-timer').innerText = `${mins}:${secs}`;
                 
             } else {
-                if (isFlashSaleCurrentlyActive) {
-                    isFlashSaleCurrentlyActive = false;
+                if (window.isFlashSaleCurrentlyActive) {
+                    window.isFlashSaleCurrentlyActive = false;
                     document.getElementById('flash-sale-banner').classList.add('hidden');
-                    manualFlashSaleEndTime = null; // reset manual state
+                    window.manualFlashSaleEndTime = null; // reset manual state
                     updateCart(); // Reset cart UI to normal prices
                 }
             }
@@ -905,43 +890,6 @@
         window.initiateCheckout = initiateCheckout;
         window.closeCheckoutModal = closeCheckoutModal;
         window.addToCart = addToCart;
-
-        async function initializeGlobalFlashSales() {
-            try {
-                // Wait for anonymous sign-in (Required to safely read/write to Firestore)
-                await signInAnonymously(auth);
-                const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
-                
-                // Point exactly to our store's public state data
-                const flashSaleRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'store_state', 'flash_sale');
-                
-                // Listen for changes from ANY player globally
-                onSnapshot(flashSaleRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data.endTime) {
-                            manualFlashSaleEndTime = new Date(data.endTime);
-                            checkFlashSale(); // Re-evaluate sale state instantly!
-                        }
-                    }
-                }, (error) => {
-                    console.error("Firebase Snapshot Error:", error);
-                });
-
-                // Upgrade the secret trigger to a GLOBAL trigger
-                window.triggerGlobalSale = async function() {
-                    showSimpleMessage("Global code accepted! Transmitting Flash Sale to ALL active players! ⚡");
-                    const endTime = new Date().getTime() + 5 * 60 * 1000;
-                    
-                    // Saving this time updates everyone's screen instantly via onSnapshot
-                    await setDoc(flashSaleRef, { endTime: endTime });
-                };
-            } catch (error) {
-                console.error("Failed to connect to global state:", error);
-            }
-        }
-        
-        initializeGlobalFlashSales();
 
         document.addEventListener('keydown', (e) => {
             // Only listen to single characters to build the code
@@ -969,10 +917,71 @@
         // Fallback local-only trigger function
         function triggerManualFlashSale() {
             showSimpleMessage("Secret code activated! Manually starting a local 5-minute Flash Sale!");
-            manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+            window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
             checkFlashSale(); // Force immediate check
         }
 
+    </script>
+
+    <!-- Global Firebase Sync (Optional: Fails gracefully if offline or blocked) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
+            authDomain: "weblox-1f8b0.firebaseapp.com",
+            projectId: "weblox-1f8b0",
+            storageBucket: "weblox-1f8b0.firebasestorage.app",
+            messagingSenderId: "765567900101",
+            appId: "1:765567900101:web:fa03494970c3019f1e93ac",
+            measurementId: "G-D7E2MT985J"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            async function initializeGlobalFlashSales() {
+                try {
+                    await signInAnonymously(auth);
+                    const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+                    
+                    const flashSaleRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'store_state', 'flash_sale');
+                    
+                    onSnapshot(flashSaleRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.endTime) {
+                                window.manualFlashSaleEndTime = new Date(data.endTime);
+                            }
+                        }
+                    }, (error) => {
+                        console.error("Firebase Snapshot Error:", error);
+                    });
+
+                    window.triggerGlobalSale = async function() {
+                        const modal = document.createElement('div');
+                        modal.innerHTML = `<div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full shadow-lg border-2 border-[#55ff55]">
+                            <p class="mb-3 font-semibold text-[#55ff55]">Global code accepted! Transmitting Flash Sale to ALL active players! ⚡</p>
+                            <button onclick="this.parentElement.remove()" class="mc-btn px-4 py-1 text-sm font-bold">Awesome!</button>
+                        </div>`;
+                        document.body.appendChild(modal.firstChild);
+
+                        const endTime = new Date().getTime() + 5 * 60 * 1000;
+                        await setDoc(flashSaleRef, { endTime: endTime });
+                    };
+                } catch (error) {
+                    console.warn("Could not connect to global database (running in local mode).", error);
+                }
+            }
+            
+            initializeGlobalFlashSales();
+        } catch(e) {
+            console.warn("Firebase modules blocked. Shop will run in local-only mode.", e);
+        }
     </script>
 </body>
 </html>
