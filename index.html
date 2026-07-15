@@ -926,7 +926,7 @@
     <!-- Global Firebase Sync (Optional: Fails gracefully if offline or blocked) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -946,7 +946,16 @@
 
             async function initializeGlobalFlashSales() {
                 try {
-                    await signInAnonymously(auth);
+                    // Proper Canvas Authentication
+                    if (typeof __initial_auth_token !== 'undefined') {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    
+                    const user = auth.currentUser;
+                    if (!user) return;
+
                     const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
                     
                     const flashSaleRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'store_state', 'flash_sale');
@@ -956,6 +965,7 @@
                             const data = docSnap.data();
                             if (data.endTime) {
                                 window.manualFlashSaleEndTime = new Date(data.endTime);
+                                checkFlashSale(); // Force immediate UI update
                             }
                         }
                     }, (error) => {
@@ -963,15 +973,24 @@
                     });
 
                     window.triggerGlobalSale = async function() {
-                        const modal = document.createElement('div');
-                        modal.innerHTML = `<div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full shadow-lg border-2 border-[#55ff55]">
+                        // Immediately update local UI so it pops up instantly!
+                        window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+                        checkFlashSale();
+
+                        const alertBox = document.createElement('div');
+                        alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full shadow-lg border-2 border-[#55ff55]';
+                        alertBox.innerHTML = `
                             <p class="mb-3 font-semibold text-[#55ff55]">Global code accepted! Transmitting Flash Sale to ALL active players! ⚡</p>
                             <button onclick="this.parentElement.remove()" class="mc-btn px-4 py-1 text-sm font-bold">Awesome!</button>
-                        </div>`;
-                        document.body.appendChild(modal.firstChild);
+                        `;
+                        document.body.appendChild(alertBox);
 
-                        const endTime = new Date().getTime() + 5 * 60 * 1000;
-                        await setDoc(flashSaleRef, { endTime: endTime });
+                        const endTime = window.manualFlashSaleEndTime.getTime();
+                        try {
+                            await setDoc(flashSaleRef, { endTime: endTime });
+                        } catch (e) {
+                            console.warn("Could not sync flash sale to cloud. Local sale activated.", e);
+                        }
                     };
                 } catch (error) {
                     console.warn("Could not connect to global database (running in local mode).", error);
