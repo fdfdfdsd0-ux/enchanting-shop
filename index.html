@@ -946,11 +946,13 @@
 
             async function initializeGlobalFlashSales() {
                 try {
-                    // Proper Canvas Authentication
-                    if (typeof __initial_auth_token !== 'undefined') {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
+                    // Force Anonymous Auth since we are using a custom external Firebase project. 
+                    // The platform's custom token will not match your Firebase project's credentials!
+                    try {
                         await signInAnonymously(auth);
+                    } catch (authErr) {
+                        console.error("Auth error! Please ensure 'Anonymous' sign-in is enabled in your Firebase Authentication settings.", authErr);
+                        return;
                     }
                     
                     const user = auth.currentUser;
@@ -969,7 +971,7 @@
                             }
                         }
                     }, (error) => {
-                        console.error("Firebase Snapshot Error:", error);
+                        console.error("Firebase Snapshot Error (Check Firestore Rules):", error);
                     });
 
                     window.triggerGlobalSale = async function() {
@@ -988,8 +990,10 @@
                         const endTime = window.manualFlashSaleEndTime.getTime();
                         try {
                             await setDoc(flashSaleRef, { endTime: endTime });
+                            console.log("Successfully saved to global database!");
                         } catch (e) {
-                            console.warn("Could not sync flash sale to cloud. Local sale activated.", e);
+                            console.error("Cloud Save Failed:", e);
+                            alert("Database Error: " + e.message + "\n\nIf it says 'Missing or insufficient permissions', you need to update your Firebase Firestore rules!");
                         }
                     };
                 } catch (error) {
