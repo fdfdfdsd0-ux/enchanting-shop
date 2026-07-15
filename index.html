@@ -268,7 +268,26 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Connect to your specific Firebase Project
+        const firebaseConfig = {
+            apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
+            authDomain: "weblox-1f8b0.firebaseapp.com",
+            projectId: "weblox-1f8b0",
+            storageBucket: "weblox-1f8b0.firebasestorage.app",
+            messagingSenderId: "765567900101",
+            appId: "1:765567900101:web:fa03494970c3019f1e93ac",
+            measurementId: "G-D7E2MT985J"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         // ==========================================
         // SECURE BACKEND SETUP: 
         // ==========================================
@@ -344,7 +363,8 @@
             }
         ];
 
-        let cart = [];
+        window.cart = []; // Exposes cart so HTML buttons can still find it
+        let cart = window.cart;
         const MAX_DAILY_ITEMS = 8;
         let isFlashSaleCurrentlyActive = false;
 
@@ -877,6 +897,52 @@
         let keyBuffer = "";
         const SECRET_CODE = "07312012";
 
+        window.toggleCart = toggleCart;
+        window.updateCart = updateCart;
+        window.openProfileModal = openProfileModal;
+        window.closeProfileModal = closeProfileModal;
+        window.confirmName = confirmName;
+        window.initiateCheckout = initiateCheckout;
+        window.closeCheckoutModal = closeCheckoutModal;
+        window.addToCart = addToCart;
+
+        async function initializeGlobalFlashSales() {
+            try {
+                // Wait for anonymous sign-in (Required to safely read/write to Firestore)
+                await signInAnonymously(auth);
+                const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+                
+                // Point exactly to our store's public state data
+                const flashSaleRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'store_state', 'flash_sale');
+                
+                // Listen for changes from ANY player globally
+                onSnapshot(flashSaleRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.endTime) {
+                            manualFlashSaleEndTime = new Date(data.endTime);
+                            checkFlashSale(); // Re-evaluate sale state instantly!
+                        }
+                    }
+                }, (error) => {
+                    console.error("Firebase Snapshot Error:", error);
+                });
+
+                // Upgrade the secret trigger to a GLOBAL trigger
+                window.triggerGlobalSale = async function() {
+                    showSimpleMessage("Global code accepted! Transmitting Flash Sale to ALL active players! ⚡");
+                    const endTime = new Date().getTime() + 5 * 60 * 1000;
+                    
+                    // Saving this time updates everyone's screen instantly via onSnapshot
+                    await setDoc(flashSaleRef, { endTime: endTime });
+                };
+            } catch (error) {
+                console.error("Failed to connect to global state:", error);
+            }
+        }
+        
+        initializeGlobalFlashSales();
+
         document.addEventListener('keydown', (e) => {
             // Only listen to single characters to build the code
             if (e.key.length === 1) {
@@ -890,13 +956,19 @@
                 // If the user types the secret code
                 if (keyBuffer.includes(SECRET_CODE)) {
                     keyBuffer = ""; // Reset buffer so it doesn't trigger twice
-                    triggerManualFlashSale();
+                    
+                    if (window.triggerGlobalSale) {
+                        window.triggerGlobalSale(); // Fire the global database update!
+                    } else {
+                        triggerManualFlashSale(); // Fallback if Firebase hasn't loaded yet
+                    }
                 }
             }
         });
 
+        // Fallback local-only trigger function
         function triggerManualFlashSale() {
-            showSimpleMessage("Secret code activated! Manually starting a 5-minute Flash Sale!");
+            showSimpleMessage("Secret code activated! Manually starting a local 5-minute Flash Sale!");
             manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
             checkFlashSale(); // Force immediate check
         }
