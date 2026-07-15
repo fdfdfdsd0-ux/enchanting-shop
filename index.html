@@ -849,6 +849,7 @@
                 
             } else {
                 if (window.isFlashSaleCurrentlyActive) {
+                    showSimpleMessage("Flash sale ended, better luck next time!");
                     window.isFlashSaleCurrentlyActive = false;
                     document.getElementById('flash-sale-banner').classList.add('hidden');
                     window.manualFlashSaleEndTime = null; // reset manual state
