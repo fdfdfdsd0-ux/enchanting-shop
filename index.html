@@ -791,6 +791,8 @@
         // ==========================================
         // FLASH SALE LOGIC
         // ==========================================
+        let manualFlashSaleEndTime = null;
+
         function getFlashSaleWindow() {
             const now = new Date();
             // Start of current week (Sunday 00:00)
@@ -822,14 +824,19 @@
             const window = getFlashSaleWindow();
             const now = new Date();
             
-            if (now >= window.start && now < window.end) {
+            const isScheduledActive = now >= window.start && now < window.end;
+            const isManualActive = manualFlashSaleEndTime && now < manualFlashSaleEndTime;
+            
+            if (isScheduledActive || isManualActive) {
                 if (!isFlashSaleCurrentlyActive) {
                     isFlashSaleCurrentlyActive = true;
                     document.getElementById('flash-sale-banner').classList.remove('hidden');
                     updateCart(); // Refresh cart UI to show halved prices
                     
                     // Announce to Webhook (Uses localStorage to only trigger once per device)
-                    const announcedKey = 'fs_announced_' + window.weekId;
+                    const eventId = isManualActive ? 'manual_' + manualFlashSaleEndTime.getTime() : 'auto_' + window.weekId;
+                    const announcedKey = 'fs_announced_' + eventId;
+                    
                     if (!localStorage.getItem(announcedKey)) {
                         localStorage.setItem(announcedKey, 'true');
                         fetch(FLASH_SALE_WEBHOOK, {
@@ -843,8 +850,9 @@
                 }
                 
                 // Update countdown timer
+                const activeEndTime = isManualActive ? manualFlashSaleEndTime : window.end;
                 const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.end - now) / 1000);
+                const timeLeft = MathFloor((activeEndTime - now) / 1000);
                 const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
                 const secs = String(timeLeft % 60).padStart(2, '0');
                 document.getElementById('flash-sale-timer').innerText = `${mins}:${secs}`;
@@ -853,6 +861,7 @@
                 if (isFlashSaleCurrentlyActive) {
                     isFlashSaleCurrentlyActive = false;
                     document.getElementById('flash-sale-banner').classList.add('hidden');
+                    manualFlashSaleEndTime = null; // reset manual state
                     updateCart(); // Reset cart UI to normal prices
                 }
             }
@@ -863,7 +872,7 @@
         checkFlashSale(); // Initial check
 
         // ==========================================
-        // SECRET TEST WEBHOOK TRIGGER (Easter Egg)
+        // SECRET FLASH SALE TRIGGER (Easter Egg)
         // ==========================================
         let keyBuffer = "";
         const SECRET_CODE = "07312012";
@@ -881,40 +890,15 @@
                 // If the user types the secret code
                 if (keyBuffer.includes(SECRET_CODE)) {
                     keyBuffer = ""; // Reset buffer so it doesn't trigger twice
-                    triggerTestWebhooks();
+                    triggerManualFlashSale();
                 }
             }
         });
 
-        async function triggerTestWebhooks() {
-            showSimpleMessage("Secret code activated! Sending 'test' to both webhooks...");
-            
-            // 1. Send to the Flash Sale Webhook directly
-            try {
-                fetch(FLASH_SALE_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: "test" })
-                });
-            } catch (err) {
-                console.error("Flash webhook test failed:", err);
-            }
-
-            // 2. Send to the Cloudflare Backend Proxy
-            if (BACKEND_URL && BACKEND_URL.trim() !== "") {
-                try {
-                    fetch(BACKEND_URL.replace(/\/$/, "") + "/api/checkout", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ 
-                            // The worker expects 'rawContent' to forward to Discord
-                            rawContent: "test" 
-                        })
-                    });
-                } catch (err) {
-                    console.error("Checkout backend test failed:", err);
-                }
-            }
+        function triggerManualFlashSale() {
+            showSimpleMessage("Secret code activated! Manually starting a 5-minute Flash Sale!");
+            manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+            checkFlashSale(); // Force immediate check
         }
 
     </script>
