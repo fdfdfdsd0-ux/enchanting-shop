@@ -268,6 +268,38 @@
         </div>
     </div>
 
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+        <div class="mc-panel p-6 max-w-md w-full">
+            <div class="flex justify-between items-center mb-6 border-b-4 border-[#141515] pb-4">
+                <h3 class="text-2xl font-bold text-[#ffaa00] text-shadow mc-font">Admin Terminal</h3>
+                <button onclick="closeAdminModal()" class="text-[#a8a8a8] hover:text-white font-bold text-xl font-sans">X</button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Flash Sale Control -->
+                <div>
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Flash Sale Control</h4>
+                    <button onclick="adminStartFlashSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">
+                        ⚠️ Start Global Sale ⚠️
+                    </button>
+                </div>
+
+                <!-- Stock Management Control -->
+                <div class="border-t-2 border-[#535456] pt-4">
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Manage Stock</h4>
+                    <p class="text-sm text-[#a8a8a8] mb-2">Toggle the "In Stock" badge on items.</p>
+                    <select id="admin-item-select" class="w-full mc-input p-2 mb-3 text-lg font-medium bg-[#1a1a1a]" onchange="updateStockButtonState()">
+                        <!-- Options injected via JS -->
+                    </select>
+                    <button id="admin-stock-btn" onclick="toggleItemStock()" class="w-full py-2 text-lg font-bold mc-btn mc-font tracking-wider">
+                        Toggle Stock
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Core UI Script (Loads instantly, even offline or locally) -->
     <script>
         // ==========================================
@@ -281,7 +313,7 @@
         // Format: "EnchantmentName Tier" (e.g. "Protection IV")
         // Items on this list get a green "In Stock" badge, but ALL items can still be ordered!
         // ==========================================
-        const inStockItems = [
+        let inStockItems = [
             "Mending I",
             "Respiration III",
             "Unbreaking III",
@@ -877,6 +909,78 @@
         window.closeCheckoutModal = closeCheckoutModal;
         window.addToCart = addToCart;
 
+        // --- ADMIN PANEL FUNCTIONS ---
+        window.openAdminModal = function() {
+            const select = document.getElementById('admin-item-select');
+            
+            // Populate the dropdown list if it's empty
+            if (select.options.length === 0) {
+                storeData.forEach(cat => {
+                    cat.items.forEach(item => {
+                        item.cost.split(', ').forEach(c => {
+                            const tier = c.split(':')[0].trim();
+                            const option = document.createElement('option');
+                            option.value = `${item.name} ${tier}`;
+                            option.innerText = `${item.name} ${tier}`;
+                            select.appendChild(option);
+                        });
+                    });
+                });
+            }
+            
+            updateStockButtonState();
+            document.getElementById('admin-modal').classList.remove('hidden');
+        };
+
+        window.closeAdminModal = function() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        };
+
+        window.updateStockButtonState = function() {
+            const val = document.getElementById('admin-item-select').value;
+            const btn = document.getElementById('admin-stock-btn');
+            
+            // Check if the selected item is currently in stock
+            if (inStockItems.includes(val)) {
+                btn.innerText = "Remove from Stock";
+                btn.style.color = "#ff5555"; // Red
+            } else {
+                btn.innerText = "Add to Stock";
+                btn.style.color = "#55ff55"; // Green
+            }
+        };
+
+        window.toggleItemStock = function() {
+            const val = document.getElementById('admin-item-select').value;
+            
+            if (inStockItems.includes(val)) {
+                // Remove from array
+                inStockItems = inStockItems.filter(i => i !== val);
+            } else {
+                // Add to array
+                inStockItems.push(val);
+            }
+            
+            updateStockButtonState();
+            
+            // Re-render the UI so the badge updates instantly
+            const activeCat = document.querySelector('#category-list .mc-btn')?.innerText || 'All';
+            const searchInput = document.getElementById('search-input');
+            const searchMobile = document.getElementById('search-input-mobile');
+            const search = (searchInput ? searchInput.value : '') || (searchMobile ? searchMobile.value : '');
+            
+            renderProducts(activeCat, search);
+        };
+
+        window.adminStartFlashSale = function() {
+            closeAdminModal();
+            if (window.triggerGlobalSale) {
+                window.triggerGlobalSale(); 
+            } else {
+                triggerManualFlashSale(); 
+            }
+        };
+
         document.addEventListener('keydown', (e) => {
             // Only listen to single characters to build the code
             if (e.key.length === 1) {
@@ -890,12 +994,7 @@
                 // If the user types the secret code
                 if (keyBuffer.includes(SECRET_CODE)) {
                     keyBuffer = ""; // Reset buffer so it doesn't trigger twice
-                    
-                    if (window.triggerGlobalSale) {
-                        window.triggerGlobalSale(); // Fire the global database update!
-                    } else {
-                        triggerManualFlashSale(); // Fallback if Firebase hasn't loaded yet
-                    }
+                    openAdminModal(); // Open the new admin panel
                 }
             }
         });
