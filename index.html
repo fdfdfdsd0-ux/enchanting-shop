@@ -837,21 +837,6 @@
                     window.isFlashSaleCurrentlyActive = true;
                     document.getElementById('flash-sale-banner').classList.remove('hidden');
                     updateCart(); 
-                    
-                    // Announce to Webhook (Uses localStorage to only trigger once per device)
-                    const eventId = isManualActive ? 'manual_' + window.manualFlashSaleEndTime.getTime() : 'auto_' + windowData.weekId;
-                    const announcedKey = 'fs_announced_' + eventId;
-                    
-                    if (!localStorage.getItem(announcedKey)) {
-                        localStorage.setItem(announcedKey, 'true');
-                        fetch(FLASH_SALE_WEBHOOK, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                content: "⚡ **FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
-                            })
-                        }).catch(err => console.log("Webhook error:", err));
-                    }
                 }
                 
                 // Update countdown timer
@@ -918,6 +903,15 @@
         function triggerManualFlashSale() {
             showSimpleMessage("Secret code activated! Manually starting a local 5-minute Flash Sale!");
             window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+            
+            fetch(FLASH_SALE_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    content: "⚡ **FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                })
+            }).catch(err => console.log("Webhook error:", err));
+
             checkFlashSale(); // Force immediate check
         }
 
@@ -977,6 +971,15 @@
                     window.triggerGlobalSale = async function() {
                         // Immediately update local UI so it pops up instantly!
                         window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+                        
+                        fetch(FLASH_SALE_WEBHOOK, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                content: "⚡ **GLOBAL FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just been triggered at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                            })
+                        }).catch(err => console.log("Webhook error:", err));
+
                         checkFlashSale();
 
                         const alertBox = document.createElement('div');
