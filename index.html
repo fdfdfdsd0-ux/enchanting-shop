@@ -79,10 +79,17 @@
             border: 2px solid #111;
             color: #a8a8a8;
         }
-        .mc-enchant-btn:hover {
+        .mc-enchant-btn:hover:not(:disabled) {
             background-color: #4a2d6b; /* Enchanting table deep purple */
             border-color: #8a2be2;
             color: #ffffff;
+        }
+        .mc-enchant-btn:disabled {
+            background-color: #1a1a1a;
+            border-color: #111;
+            color: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         /* Custom blocky scrollbar */
@@ -154,6 +161,15 @@
                 <!-- Products injected here -->
             </div>
         </main>
+    </div>
+
+    <!-- Classic Minecraft XP Bar Tracker -->
+    <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40 w-[250px] sm:w-[350px] pointer-events-none">
+        <div id="xp-level-text" class="text-center font-bold text-[#55ff55] text-shadow mb-1 mc-font text-xl transition-all duration-300">0</div>
+        <div class="h-[14px] w-full bg-[#111] border-2 border-[#141515] p-[2px] relative flex shadow-lg">
+            <!-- XP fill segment -->
+            <div id="xp-bar-fill" class="h-full bg-[#55ff55] w-0 transition-all duration-300 ease-out" style="box-shadow: inset 0 2px 0px rgba(255,255,255,0.3), inset 0 -2px 0px rgba(0,0,0,0.2);"></div>
+        </div>
     </div>
 
     <!-- Cart Drawer -->
@@ -249,10 +265,22 @@
     <script>
         // ==========================================
         // SECURE BACKEND SETUP: 
-        // Once you deploy your Cloudflare Worker, paste its URL below!
-        // Example: const BACKEND_URL = "https://your-worker.your-subdomain.workers.dev";
         // ==========================================
         const BACKEND_URL = "https://minecraft-shop-backend.fdfdfdsd0.workers.dev/"; 
+
+        // ==========================================
+        // INVENTORY TRACKER:
+        // Format: "EnchantmentName Tier" (e.g. "Protection IV")
+        // Items on this list get a green "In Stock" badge, but ALL items can still be ordered!
+        // ==========================================
+        const inStockItems = [
+            "Mending I",
+            "Respiration III",
+            "Unbreaking III",
+            "Efficiency V",
+            "Protection IV",
+            "Fortune III"
+        ];
 
         const storeData = [
             { 
@@ -323,6 +351,7 @@
             if (mat.includes('redstone')) return '#ff5555'; // Red
             if (mat.includes('copper')) return '#e77c56'; // Orange-ish
             if (mat.includes('coal')) return '#aaaaaa'; // Grey
+            if (mat.includes('netherite')) return '#888888'; // Dark Grey
             return '#d0d0d0';
         }
 
@@ -384,13 +413,20 @@
                     
                     const tierButtons = item.cost.split(', ').map(c => {
                         const parts = c.split(':');
-                        const tier = parts[0];
-                        const price = parts[1];
+                        const tier = parts[0].trim();
+                        const price = parts[1].trim();
                         const matColor = getMaterialColor(price);
 
+                        // Check if this specific item + tier combo is in stock
+                        const isStocked = inStockItems.includes(`${item.name} ${tier}`);
+                        const stockBadge = isStocked ? `<span class="ml-2 text-[11px] bg-[#55ff55] text-black border border-[#22aa22] px-1.5 py-0.5 shadow-sm font-sans tracking-wider uppercase font-bold">In Stock</span>` : '';
+
                         return `
-                            <button onclick="addToCart('${item.name}', '${c}')" class="w-full flex justify-between px-3 py-2 mb-2 mc-enchant-btn">
-                                <span class="font-bold text-shadow-sm text-white">${tier}</span>
+                            <button onclick="addToCart('${item.name}', '${c}')" class="w-full flex justify-between items-center px-3 py-2 mb-2 mc-enchant-btn">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-shadow-sm text-white">${tier}</span>
+                                    ${stockBadge}
+                                </div>
                                 <span class="font-bold text-shadow-sm" style="color: ${matColor}">${price}</span>
                             </button>
                         `;
@@ -440,6 +476,21 @@
             
             badge.innerText = cart.length;
             badge.classList.toggle('hidden', cart.length === 0);
+            
+            const xpFill = document.getElementById('xp-bar-fill');
+            const xpText = document.getElementById('xp-level-text');
+            const fillPercentage = (cart.length / MAX_DAILY_ITEMS) * 100;
+            
+            xpFill.style.width = `${fillPercentage}%`;
+            xpText.innerText = cart.length;
+            
+            if(cart.length >= MAX_DAILY_ITEMS) {
+                xpText.style.color = "#ff5555"; // Turn red when full
+                xpFill.style.backgroundColor = "#ffaa00"; // Turn gold when full
+            } else {
+                xpText.style.color = "#55ff55"; // Normal Green
+                xpFill.style.backgroundColor = "#55ff55"; // Normal Green
+            }
             
             const shippingFeeDisplay = document.getElementById('shipping-fee-display');
             if (shippingFeeDisplay) {
@@ -557,14 +608,12 @@
             
             const receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
-            // Display loading modal if we have a backend URL
             const modal = document.getElementById('checkout-modal');
             const loadingState = document.getElementById('modal-loading-state');
             const successState = document.getElementById('modal-success-state');
             const fallbackState = document.getElementById('modal-fallback-state');
             const errorState = document.getElementById('modal-error-state');
 
-            // Reset modal states
             loadingState.classList.add('hidden');
             successState.classList.add('hidden');
             fallbackState.classList.add('hidden');
@@ -599,7 +648,6 @@
                             toggleCart();
                         }
                     } else {
-                        // Backend returned non-200, fallback to clipboard
                         copyTextToClipboard(receiptText);
                         errorState.classList.remove('hidden');
                         saveOrderCount(today, ordersToday);
@@ -610,7 +658,6 @@
                         }
                     }
                 } catch (err) {
-                    // Fail/Network issue, fallback to clipboard
                     loadingState.classList.add('hidden');
                     copyTextToClipboard(receiptText);
                     errorState.classList.remove('hidden');
@@ -622,7 +669,6 @@
                     }
                 }
             } else {
-                // No backend configured, use safe fallback clipboard copy instantly
                 copyTextToClipboard(receiptText);
                 fallbackState.classList.remove('hidden');
                 saveOrderCount(today, ordersToday);
@@ -639,7 +685,6 @@
             localStorage.setItem('ordersToday', ordersToday + cart.length);
         }
 
-        // Clipboard management workaround
         function copyTextToClipboard(text) {
             const dummyTextArea = document.createElement("textarea");
             document.body.appendChild(dummyTextArea);
@@ -653,7 +698,6 @@
             document.getElementById('checkout-modal').classList.add('hidden');
         }
 
-        // Custom clean notification helper instead of using browser alerts
         function showSimpleMessage(message) {
             const alertBox = document.createElement('div');
             alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full';
@@ -664,7 +708,6 @@
             document.body.appendChild(alertBox);
         }
 
-        // Init Menu System
         const catList = document.getElementById('category-list');
         const mobileCatList = document.getElementById('mobile-category-list');
         
@@ -684,6 +727,47 @@
         document.getElementById('search-input-mobile').addEventListener('input', (e) => renderProducts('All', e.target.value));
 
         filterCategory('All'); 
+
+        function spawnEnchantmentDust() {
+            const dust = document.createElement('div');
+            const colors = ['#8a2be2', '#55ffff', '#4a2d6b'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            dust.className = 'fixed pointer-events-none z-0 rounded-sm opacity-60';
+            dust.style.backgroundColor = color;
+            
+            const size = Math.random() * 3 + 3;
+            dust.style.width = `${size}px`;
+            dust.style.height = `${size}px`;
+            
+            dust.style.left = `${Math.random() * 100}vw`;
+            dust.style.bottom = `-10px`;
+            
+            document.body.appendChild(dust);
+            
+            const drift = (Math.random() - 0.5) * 50; 
+            const floatHeight = Math.random() * 150 + 100;
+            const duration = Math.random() * 2000 + 2000; 
+            
+            dust.animate([
+                { transform: 'translate(0, 0)', opacity: 0 },
+                { opacity: 0.6, offset: 0.2 },
+                { transform: `translate(${drift}px, -${floatHeight}px)`, opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            
+            setTimeout(() => {
+                if (dust.parentNode) {
+                    dust.remove();
+                }
+            }, duration);
+        }
+
+        setInterval(spawnEnchantmentDust, 300);
+        
     </script>
 </body>
 </html>
