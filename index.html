@@ -146,18 +146,6 @@
         <span id="bogo-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
     </div>
 
-    <!-- Free Delivery Banner (Hidden by default) -->
-    <div id="free-shipping-banner" class="hidden bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-blue-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🚀 FREE DELIVERY EVENT! 0 EMERALD SHIPPING FEE! 🚀</span>
-        <span id="free-shipping-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Armor Sale Banner (Hidden by default) -->
-    <div id="armor-sale-banner" class="hidden bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🛡️ ARMOR EVENT! 50% OFF ALL ARMOR ENCHANTS! 🛡️</span>
-        <span id="armor-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
         <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee of 1 Emerald per item. (Limit 8 items per day)
@@ -323,24 +311,6 @@
                         🎁 Start BOGO Sale 🎁
                     </button>
                 </div>
-
-                <!-- Free Shipping Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Free Delivery Event</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Waives the 1 Emerald shipping fee for all orders.</p>
-                    <button onclick="adminStartFreeShipping()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ffff]">
-                        🚀 Start Free Delivery Event 🚀
-                    </button>
-                </div>
-
-                <!-- Armor Sale Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Armor Event</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">50% off all Armor enchantments.</p>
-                    <button onclick="adminStartArmorSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#a824e3]">
-                        🛡️ Start Armor Sale 🛡️
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -429,10 +399,6 @@
         window.manualFlashSaleEndTime = null;
         window.isBogoSaleCurrentlyActive = false;
         window.manualBogoSaleEndTime = null;
-        window.isFreeShippingActive = false;
-        window.manualFreeShippingEndTime = null;
-        window.isArmorSaleActive = false;
-        window.manualArmorSaleEndTime = null;
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -452,30 +418,18 @@
         // Calculates sum totals of each currency block
         function calculateTotal() {
             const totals = {};
-            let shippingFee = window.isFreeShippingActive ? 0 : cart.length; 
+            let shippingFee = cart.length; 
 
-            // --- Reset Discount Flags ---
-            cart.forEach(i => {
-                i.isBogoDiscounted = false;
-                i.isArmorDiscounted = false;
-            });
-
-            // --- Calculate Armor Discount (Applies if Flash Sale is NOT active) ---
-            if (window.isArmorSaleActive && !window.isFlashSaleCurrentlyActive) {
-                cart.forEach(item => {
-                    if (item.category === 'Armor') {
-                        item.isArmorDiscounted = true;
-                    }
-                });
-            }
+            // --- Reset BOGO Flags ---
+            cart.forEach(i => i.isBogoDiscounted = false);
 
             // --- Calculate BOGO (Applies if Flash Sale is NOT active) ---
             if (window.isBogoSaleCurrentlyActive && !window.isFlashSaleCurrentlyActive) {
                 let bogoCredits = Math.floor(cart.length / 2);
                 
-                // Exclude Tier I items AND items already heavily discounted by Armor Sale
+                // Exclude Tier I items (checks if string perfectly starts with "I:")
                 let eligibleItems = cart.map((item, index) => ({ item, index }))
-                    .filter(obj => !obj.item.price.startsWith('I:') && !obj.item.isArmorDiscounted); 
+                    .filter(obj => !obj.item.price.startsWith('I:')); 
                     
                 // Sort ascending by cost so we discount the cheapest eligible items
                 eligibleItems.forEach(obj => {
@@ -510,10 +464,6 @@
                         if (window.isFlashSaleCurrentlyActive) {
                             finalAmount = Math.max(1, Math.ceil(amount / 2)); 
                         } 
-                        // --- ARMOR DISCOUNT (50% OFF ARMOR) ---
-                        else if (item.isArmorDiscounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount / 2));
-                        }
                         // --- BOGO DISCOUNT (75% OFF ITEMS) ---
                         else if (item.isBogoDiscounted) {
                             finalAmount = Math.max(1, Math.ceil(amount * 0.25)); 
@@ -569,7 +519,7 @@
                         const stockBadge = isStocked ? `<span class="ml-2 text-[11px] bg-[#55ff55] text-black border border-[#22aa22] px-1.5 py-0.5 shadow-sm font-sans tracking-wider uppercase font-bold">In Stock</span>` : '';
 
                         return `
-                            <button onclick="addToCart('${item.name}', '${c}', '${cat.category}')" class="w-full flex justify-between items-center px-3 py-2 mb-2 mc-enchant-btn">
+                            <button onclick="addToCart('${item.name}', '${c}')" class="w-full flex justify-between items-center px-3 py-2 mb-2 mc-enchant-btn">
                                 <div class="flex items-center">
                                     <span class="font-bold text-shadow-sm text-white">${tier}</span>
                                     ${stockBadge}
@@ -591,7 +541,7 @@
             });
         }
 
-        function addToCart(name, price, category = 'General') {
+        function addToCart(name, price) {
             const { ordersToday } = getDailyOrderData();
             
             if (ordersToday + cart.length >= MAX_DAILY_ITEMS) {
@@ -599,7 +549,7 @@
                 return;
             }
 
-            cart.push({ name, price, category });
+            cart.push({ name, price });
             updateCart();
         }
 
@@ -624,11 +574,6 @@
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt / 2));
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">Flash: ${discountedAmt} ${mat}</span>`;
-                } else if (i.isArmorDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt / 2));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#a824e3]">Armor Sale: ${discountedAmt} ${mat}</span>`;
                 } else if (i.isBogoDiscounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
@@ -669,11 +614,7 @@
             const shippingFeeDisplay = document.getElementById('shipping-fee-display');
             if (shippingFeeDisplay) {
                 const fee = cart.length;
-                if (window.isFreeShippingActive) {
-                    shippingFeeDisplay.innerHTML = `<span class="line-through text-[#888] mr-2">${fee} Emerald${fee !== 1 ? 's' : ''}</span><span class="text-[#55ffff]">FREE</span>`;
-                } else {
-                    shippingFeeDisplay.innerText = `+${fee} Emerald${fee !== 1 ? 's' : ''}`;
-                }
+                shippingFeeDisplay.innerText = `+${fee} Emerald${fee !== 1 ? 's' : ''}`;
             }
 
             const totalCostDisplay = document.getElementById('total-cost-display');
@@ -784,29 +725,17 @@
                 : "0 Items";
 
             const itemList = cart.map(i => `- **${i.name}** (${i.price})`).join('\n');
-            const fee = window.isFreeShippingActive ? 0 : cart.length;
-            const feeText = fee === 0 ? "FREE Delivery Event" : `+${fee} Emeralds shipping fee`;
+            const fee = cart.length;
             
-            let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(${feeText})*`;
+            let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
             if (window.isFlashSaleCurrentlyActive) {
                 receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
-            } else {
-                if (window.isArmorSaleActive) {
-                    let armorCount = cart.filter(i => i.isArmorDiscounted).length;
-                    if (armorCount > 0) {
-                        receiptText += `\n🛡️ **BOUGHT DURING ARMOR EVENT (${armorCount} ITEM(S) 50% OFF)** 🛡️`;
-                    }
+            } else if (window.isBogoSaleCurrentlyActive) {
+                let discountedCount = cart.filter(i => i.isBogoDiscounted).length;
+                if (discountedCount > 0) {
+                    receiptText += `\n\n🎁 **BOUGHT DURING BOGO SALE (${discountedCount} ITEM(S) 75% OFF)** 🎁`;
                 }
-                if (window.isBogoSaleCurrentlyActive) {
-                    let discountedCount = cart.filter(i => i.isBogoDiscounted).length;
-                    if (discountedCount > 0) {
-                        receiptText += `\n🎁 **BOUGHT DURING BOGO SALE (${discountedCount} ITEM(S) 75% OFF)** 🎁`;
-                    }
-                }
-            }
-            if (window.isFreeShippingActive) {
-                receiptText += `\n🚀 **BOUGHT DURING FREE DELIVERY EVENT (No Shipping Fees!)** 🚀`;
             }
 
             const modal = document.getElementById('checkout-modal');
@@ -1068,64 +997,6 @@
         setInterval(checkBogoSale, 1000);
         checkBogoSale();
 
-        function checkFreeShipping() {
-            const now = new Date();
-            const isManualActive = window.manualFreeShippingEndTime && now < window.manualFreeShippingEndTime;
-            
-            if (isManualActive) {
-                if (!window.isFreeShippingActive) {
-                    window.isFreeShippingActive = true;
-                    document.getElementById('free-shipping-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualFreeShippingEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('free-shipping-timer').innerText = `${mins}:${secs}`;
-            } else {
-                if (window.isFreeShippingActive) {
-                    showSimpleMessage("Free Delivery event ended!");
-                    window.isFreeShippingActive = false;
-                    document.getElementById('free-shipping-banner').classList.add('hidden');
-                    window.manualFreeShippingEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
-        function checkArmorSale() {
-            const now = new Date();
-            const isManualActive = window.manualArmorSaleEndTime && now < window.manualArmorSaleEndTime;
-            
-            if (isManualActive) {
-                if (!window.isArmorSaleActive) {
-                    window.isArmorSaleActive = true;
-                    document.getElementById('armor-sale-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualArmorSaleEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('armor-sale-timer').innerText = `${mins}:${secs}`;
-            } else {
-                if (window.isArmorSaleActive) {
-                    showSimpleMessage("Armor Event ended!");
-                    window.isArmorSaleActive = false;
-                    document.getElementById('armor-sale-banner').classList.add('hidden');
-                    window.manualArmorSaleEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
-        setInterval(checkFreeShipping, 1000);
-        checkFreeShipping();
-        
-        setInterval(checkArmorSale, 1000);
-        checkArmorSale();
-
         // ==========================================
         // SECRET FLASH SALE TRIGGER (Easter Egg)
         // ==========================================
@@ -1218,16 +1089,6 @@
             triggerManualBogoSale(); 
         };
 
-        window.adminStartFreeShipping = function() {
-            closeAdminModal();
-            triggerManualFreeShipping(); 
-        };
-
-        window.adminStartArmorSale = function() {
-            closeAdminModal();
-            triggerManualArmorSale(); 
-        };
-
         document.addEventListener('keydown', (e) => {
             // Only listen to single characters to build the code
             if (e.key.length === 1) {
@@ -1275,36 +1136,6 @@
             }).catch(err => console.log("Webhook error:", err));
 
             checkBogoSale(); // Force immediate check
-        }
-
-        function triggerManualFreeShipping() {
-            showSimpleMessage("Secret code activated! Manually starting a local 5-minute Free Delivery Event!");
-            window.manualFreeShippingEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: "🚀 **FREE DELIVERY ALERT!** 🚀\nA 5-minute Free Delivery Event has started! 0 Emerald shipping fees for a limited time! Hurry!" 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkFreeShipping(); 
-        }
-
-        function triggerManualArmorSale() {
-            showSimpleMessage("Secret code activated! Manually starting a local 5-minute Armor Sale!");
-            window.manualArmorSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: "🛡️ **ARMOR EVENT ALERT!** 🛡️\nA 5-minute Armor Sale has started! All Armor enchantments are 50% OFF! Hurry!" 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkArmorSale(); 
         }
 
     </script>
