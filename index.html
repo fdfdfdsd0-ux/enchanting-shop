@@ -140,12 +140,6 @@
         <span id="flash-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
     </div>
 
-    <!-- BOGO Sale Banner (Hidden by default) -->
-    <div id="bogo-sale-banner" class="hidden bg-gradient-to-r from-green-600 to-blue-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-green-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🎁 BOGO 75% OFF ACTIVE! (Tier I Excluded) 🎁</span>
-        <span id="bogo-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
         <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee of 1 Emerald per item. (Limit 8 items per day)
@@ -274,47 +268,6 @@
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
-    <div id="admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-        <div class="mc-panel p-6 max-w-md w-full">
-            <div class="flex justify-between items-center mb-6 border-b-4 border-[#141515] pb-4">
-                <h3 class="text-2xl font-bold text-[#ffaa00] text-shadow mc-font">Admin Terminal</h3>
-                <button onclick="closeAdminModal()" class="text-[#a8a8a8] hover:text-white font-bold text-xl font-sans">X</button>
-            </div>
-            
-            <div class="space-y-6">
-                <!-- Flash Sale Control -->
-                <div>
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Flash Sale Control</h4>
-                    <button onclick="adminStartFlashSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">
-                        ⚠️ Start Global Sale ⚠️
-                    </button>
-                </div>
-
-                <!-- Stock Management Control -->
-                <div class="border-t-2 border-[#535456] pt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Manage Stock</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Toggle the "In Stock" badge on items.</p>
-                    <select id="admin-item-select" class="w-full mc-input p-2 mb-3 text-lg font-medium bg-[#1a1a1a]" onchange="updateStockButtonState()">
-                        <!-- Options injected via JS -->
-                    </select>
-                    <button id="admin-stock-btn" onclick="toggleItemStock()" class="w-full py-2 text-lg font-bold mc-btn mc-font tracking-wider">
-                        Toggle Stock
-                    </button>
-                </div>
-
-                <!-- BOGO Sale Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">BOGO 75% Off Sale</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Buy 1 Get 1 75% Off. Excludes Tier I items (like Mending) from being discounted.</p>
-                    <button onclick="adminStartBogoSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ff55]">
-                        🎁 Start BOGO Sale 🎁
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Core UI Script (Loads instantly, even offline or locally) -->
     <script>
         // ==========================================
@@ -328,7 +281,7 @@
         // Format: "EnchantmentName Tier" (e.g. "Protection IV")
         // Items on this list get a green "In Stock" badge, but ALL items can still be ordered!
         // ==========================================
-        let inStockItems = [
+        const inStockItems = [
             "Mending I",
             "Respiration III",
             "Unbreaking III",
@@ -397,8 +350,6 @@
         const MAX_DAILY_ITEMS = 8;
         window.isFlashSaleCurrentlyActive = false;
         window.manualFlashSaleEndTime = null;
-        window.isBogoSaleCurrentlyActive = false;
-        window.manualBogoSaleEndTime = null;
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -420,33 +371,6 @@
             const totals = {};
             let shippingFee = cart.length; 
 
-            // --- Reset BOGO Flags ---
-            cart.forEach(i => i.isBogoDiscounted = false);
-
-            // --- Calculate BOGO (Applies if Flash Sale is NOT active) ---
-            if (window.isBogoSaleCurrentlyActive && !window.isFlashSaleCurrentlyActive) {
-                let bogoCredits = Math.floor(cart.length / 2);
-                
-                // Exclude Tier I items (checks if string perfectly starts with "I:")
-                let eligibleItems = cart.map((item, index) => ({ item, index }))
-                    .filter(obj => !obj.item.price.startsWith('I:')); 
-                    
-                // Sort ascending by cost so we discount the cheapest eligible items
-                eligibleItems.forEach(obj => {
-                    const priceStr = obj.item.price.split(':')[1] || obj.item.price;
-                    obj.parsedAmount = parseInt(priceStr.trim().split(' ')[0]) || 0;
-                });
-                eligibleItems.sort((a, b) => a.parsedAmount - b.parsedAmount);
-                
-                let discountsApplied = 0;
-                for (let obj of eligibleItems) {
-                    if (discountsApplied < bogoCredits) {
-                        cart[obj.index].isBogoDiscounted = true;
-                        discountsApplied++;
-                    }
-                }
-            }
-
             cart.forEach(item => {
                 const costPart = item.price.split(':')[1];
                 if (costPart) {
@@ -459,20 +383,18 @@
                     if (material === "Diamond") material = "Diamonds";
 
                     if (!isNaN(amount) && material) {
-                        let finalAmount = amount;
-                        // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
-                        if (window.isFlashSaleCurrentlyActive) {
-                            finalAmount = Math.max(1, Math.ceil(amount / 2)); 
-                        } 
-                        // --- BOGO DISCOUNT (75% OFF ITEMS) ---
-                        else if (item.isBogoDiscounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount * 0.25)); 
-                        }
-                        
-                        totals[material] = (totals[material] || 0) + finalAmount;
+                        totals[material] = (totals[material] || 0) + amount;
                     }
                 }
             });
+
+            // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
+            if (window.isFlashSaleCurrentlyActive) {
+                for (let mat in totals) {
+                    // Halve the cost, rounding up so there's always a min cost of 1
+                    totals[mat] = Math.max(1, Math.ceil(totals[mat] / 2)); 
+                }
+            }
 
             if (shippingFee > 0) {
                 totals['Emeralds'] = (totals['Emeralds'] || 0) + shippingFee;
@@ -557,36 +479,14 @@
             const list = document.getElementById('cart-items');
             const badge = document.getElementById('cart-badge');
             
-            // Calculate totals FIRST so BOGO flags are assigned to the cart array
-            const totals = calculateTotal();
-            
             list.innerHTML = cart.map((i, idx) => {
-                const parts = i.price.split(':');
-                const tierText = parts[0] ? parts[0].trim() : '';
-                const priceText = parts[1] ? parts[1].trim() : i.price;
+                const priceText = i.price.split(':')[1] || i.price;
                 const matColor = getMaterialColor(priceText);
-                
-                let displayPrice = priceText;
-                let bogoBadge = '';
-                
-                if (window.isFlashSaleCurrentlyActive) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt / 2));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">Flash: ${discountedAmt} ${mat}</span>`;
-                } else if (i.isBogoDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ff55]">BOGO: ${discountedAmt} ${mat}</span>`;
-                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#55ff55] text-black px-1.5 py-0.5 border border-[#22aa22] shadow-sm uppercase font-bold tracking-widest">75% OFF</span>`;
-                }
-
                 return `
                 <div class="flex justify-between items-center mc-panel p-3 bg-[#262626]">
                     <div>
-                        <p class="font-bold text-white text-shadow-sm text-lg">${i.name} <span class="text-[#a8a8a8] text-sm">${tierText}</span>${bogoBadge}</p>
-                        <p class="font-bold text-shadow-sm" style="color: ${matColor}">${displayPrice}</p>
+                        <p class="font-bold text-white text-shadow-sm text-lg">${i.name}</p>
+                        <p class="font-bold text-shadow-sm" style="color: ${matColor}">${i.price}</p>
                     </div>
                     <button onclick="cart.splice(${idx}, 1); updateCart()" class="text-[#ff5555] font-bold hover:text-white underline font-sans px-2">X</button>
                 </div>
@@ -619,6 +519,7 @@
 
             const totalCostDisplay = document.getElementById('total-cost-display');
             if (totalCostDisplay) {
+                const totals = calculateTotal();
                 if (Object.keys(totals).length === 0) {
                     totalCostDisplay.innerHTML = '<span class="text-[#a8a8a8] font-normal">Empty</span>';
                 } else {
@@ -731,11 +632,6 @@
 
             if (window.isFlashSaleCurrentlyActive) {
                 receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
-            } else if (window.isBogoSaleCurrentlyActive) {
-                let discountedCount = cart.filter(i => i.isBogoDiscounted).length;
-                if (discountedCount > 0) {
-                    receiptText += `\n\n🎁 **BOUGHT DURING BOGO SALE (${discountedCount} ITEM(S) 75% OFF)** 🎁`;
-                }
             }
 
             const modal = document.getElementById('checkout-modal');
@@ -962,40 +858,9 @@
             }
         }
 
-        function checkBogoSale() {
-            const now = new Date();
-            const isManualActive = window.manualBogoSaleEndTime && now < window.manualBogoSaleEndTime;
-            
-            if (isManualActive) {
-                if (!window.isBogoSaleCurrentlyActive) {
-                    window.isBogoSaleCurrentlyActive = true;
-                    document.getElementById('bogo-sale-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualBogoSaleEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('bogo-sale-timer').innerText = `${mins}:${secs}`;
-                
-            } else {
-                if (window.isBogoSaleCurrentlyActive) {
-                    showSimpleMessage("BOGO sale ended, better luck next time!");
-                    window.isBogoSaleCurrentlyActive = false;
-                    document.getElementById('bogo-sale-banner').classList.add('hidden');
-                    window.manualBogoSaleEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
         // Start checking for flash sales every second
         setInterval(checkFlashSale, 1000);
         checkFlashSale(); // Initial check
-
-        setInterval(checkBogoSale, 1000);
-        checkBogoSale();
 
         // ==========================================
         // SECRET FLASH SALE TRIGGER (Easter Egg)
@@ -1012,83 +877,6 @@
         window.closeCheckoutModal = closeCheckoutModal;
         window.addToCart = addToCart;
 
-        // --- ADMIN PANEL FUNCTIONS ---
-        window.openAdminModal = function() {
-            const select = document.getElementById('admin-item-select');
-            
-            // Populate the dropdown list if it's empty
-            if (select.options.length === 0) {
-                storeData.forEach(cat => {
-                    cat.items.forEach(item => {
-                        item.cost.split(', ').forEach(c => {
-                            const tier = c.split(':')[0].trim();
-                            const option = document.createElement('option');
-                            option.value = `${item.name} ${tier}`;
-                            option.innerText = `${item.name} ${tier}`;
-                            select.appendChild(option);
-                        });
-                    });
-                });
-            }
-            
-            updateStockButtonState();
-            document.getElementById('admin-modal').classList.remove('hidden');
-        };
-
-        window.closeAdminModal = function() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        };
-
-        window.updateStockButtonState = function() {
-            const val = document.getElementById('admin-item-select').value;
-            const btn = document.getElementById('admin-stock-btn');
-            
-            // Check if the selected item is currently in stock
-            if (inStockItems.includes(val)) {
-                btn.innerText = "Remove from Stock";
-                btn.style.color = "#ff5555"; // Red
-            } else {
-                btn.innerText = "Add to Stock";
-                btn.style.color = "#55ff55"; // Green
-            }
-        };
-
-        window.toggleItemStock = function() {
-            const val = document.getElementById('admin-item-select').value;
-            
-            if (inStockItems.includes(val)) {
-                // Remove from array
-                inStockItems = inStockItems.filter(i => i !== val);
-            } else {
-                // Add to array
-                inStockItems.push(val);
-            }
-            
-            updateStockButtonState();
-            
-            // Re-render the UI so the badge updates instantly
-            const activeCat = document.querySelector('#category-list .mc-btn')?.innerText || 'All';
-            const searchInput = document.getElementById('search-input');
-            const searchMobile = document.getElementById('search-input-mobile');
-            const search = (searchInput ? searchInput.value : '') || (searchMobile ? searchMobile.value : '');
-            
-            renderProducts(activeCat, search);
-        };
-
-        window.adminStartFlashSale = function() {
-            closeAdminModal();
-            if (window.triggerGlobalSale) {
-                window.triggerGlobalSale(); 
-            } else {
-                triggerManualFlashSale(); 
-            }
-        };
-
-        window.adminStartBogoSale = function() {
-            closeAdminModal();
-            triggerManualBogoSale(); 
-        };
-
         document.addEventListener('keydown', (e) => {
             // Only listen to single characters to build the code
             if (e.key.length === 1) {
@@ -1102,7 +890,12 @@
                 // If the user types the secret code
                 if (keyBuffer.includes(SECRET_CODE)) {
                     keyBuffer = ""; // Reset buffer so it doesn't trigger twice
-                    openAdminModal(); // Open the new admin panel
+                    
+                    if (window.triggerGlobalSale) {
+                        window.triggerGlobalSale(); // Fire the global database update!
+                    } else {
+                        triggerManualFlashSale(); // Fallback if Firebase hasn't loaded yet
+                    }
                 }
             }
         });
@@ -1123,21 +916,99 @@
             checkFlashSale(); // Force immediate check
         }
 
-        function triggerManualBogoSale() {
-            showSimpleMessage("Secret code activated! Manually starting a local 5-minute BOGO Sale!");
-            window.manualBogoSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+    </script>
+
+    <!-- Global Firebase Sync (Optional: Fails gracefully if offline or blocked) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
+            authDomain: "weblox-1f8b0.firebaseapp.com",
+            projectId: "weblox-1f8b0",
+            storageBucket: "weblox-1f8b0.firebasestorage.app",
+            messagingSenderId: "765567900101",
+            appId: "1:765567900101:web:fa03494970c3019f1e93ac",
+            measurementId: "G-D7E2MT985J"
+        };
+        
+        try {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            async function initializeGlobalFlashSales() {
+                try {
+                    // Force Anonymous Auth since we are using a custom external Firebase project. 
+                    // The platform's custom token will not match your Firebase project's credentials!
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (authErr) {
+                        console.error("Auth error! Please ensure 'Anonymous' sign-in is enabled in your Firebase Authentication settings.", authErr);
+                        return;
+                    }
+                    
+                    const user = auth.currentUser;
+                    if (!user) return;
+
+                    const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+                    
+                    const flashSaleRef = doc(db, 'artifacts', currentAppId, 'public', 'data', 'store_state', 'flash_sale');
+                    
+                    onSnapshot(flashSaleRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.endTime) {
+                                window.manualFlashSaleEndTime = new Date(data.endTime);
+                                checkFlashSale(); // Force immediate UI update
+                            }
+                        }
+                    }, (error) => {
+                        console.error("Firebase Snapshot Error (Check Firestore Rules):", error);
+                    });
+
+                    window.triggerGlobalSale = async function() {
+                        // Immediately update local UI so it pops up instantly!
+                        window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+                        
+                        fetch(FLASH_SALE_WEBHOOK, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                content: "⚡ **GLOBAL FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just been triggered at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                            })
+                        }).catch(err => console.log("Webhook error:", err));
+
+                        checkFlashSale();
+
+                        const alertBox = document.createElement('div');
+                        alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full shadow-lg border-2 border-[#55ff55]';
+                        alertBox.innerHTML = `
+                            <p class="mb-3 font-semibold text-[#55ff55]">Global code accepted! Transmitting Flash Sale to ALL active players! ⚡</p>
+                            <button onclick="this.parentElement.remove()" class="mc-btn px-4 py-1 text-sm font-bold">Awesome!</button>
+                        `;
+                        document.body.appendChild(alertBox);
+
+                        const endTime = window.manualFlashSaleEndTime.getTime();
+                        try {
+                            await setDoc(flashSaleRef, { endTime: endTime });
+                            console.log("Successfully saved to global database!");
+                        } catch (e) {
+                            console.error("Cloud Save Failed:", e);
+                            alert("Database Error: " + e.message + "\n\nIf it says 'Missing or insufficient permissions', you need to update your Firebase Firestore rules!");
+                        }
+                    };
+                } catch (error) {
+                    console.warn("Could not connect to global database (running in local mode).", error);
+                }
+            }
             
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: "🎁 **BOGO SALE ALERT!** 🎁\nA 5-minute Buy 1 Get 1 75% OFF Sale has just started! (Excludes Tier I items like Mending). Hurry!" 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkBogoSale(); // Force immediate check
+            initializeGlobalFlashSales();
+        } catch(e) {
+            console.warn("Firebase modules blocked. Shop will run in local-only mode.", e);
         }
-
     </script>
 </body>
 </html>
