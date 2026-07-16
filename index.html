@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body { 
             font-family: 'Inter', sans-serif;
@@ -43,13 +44,13 @@
             color: #ffffff;
             transition: none; /* No smooth animations in MC! */
         }
-        .mc-btn:hover {
+        .mc-btn:hover:not(:disabled) {
             background-color: #6a8ec2;
             border-top-color: #9abbed;
             border-left-color: #9abbed;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
         }
-        .mc-btn:active {
+        .mc-btn:active:not(:disabled) {
             border-bottom-color: #9e9e9e;
             border-right-color: #9e9e9e;
             border-top-color: #141515;
@@ -134,6 +135,12 @@
         </div>
     </header>
 
+    <!-- Custom Announcement Banner (Hidden by default) -->
+    <div id="announcement-banner" class="hidden bg-[#ffaa00] text-black font-bold text-center py-2 px-4 shadow-lg border-b-4 border-[#885500] z-40 relative">
+        <span id="announcement-text" class="mc-font text-lg text-shadow-none tracking-wide"></span>
+        <button onclick="document.getElementById('announcement-banner').classList.add('hidden')" class="ml-4 font-sans text-sm underline hover:text-white">Dismiss</button>
+    </div>
+
     <!-- Flash Sale Banner (Hidden by default) -->
     <div id="flash-sale-banner" class="hidden text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative">
         <span id="flash-sale-text" class="mc-font text-xl text-shadow animate-pulse">⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡</span>
@@ -142,7 +149,7 @@
 
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
-        <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee of 1 Emerald per item. (Limit 8 items per day)
+        <span class="text-[#a824e3] font-bold text-shadow-sm mc-font">Shipping Info:</span> All orders require a delivery fee.
     </div>
 
     <!-- Mobile Category Navigation -->
@@ -287,6 +294,15 @@
                 <button onclick="showStockManager()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#55ff55]">
                     📦 Manage Stock
                 </button>
+                <button onclick="showSettingsManager()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#aaaaaa]">
+                    ⚙️ Shop Settings
+                </button>
+                <button onclick="showBroadcastManager()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">
+                    📢 Broadcast Message
+                </button>
+                <button id="admin-lockdown-btn" onclick="toggleLockdown()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#ff5555]">
+                    🔓 Lockdown Store
+                </button>
             </div>
 
             <!-- Stock Manager View -->
@@ -309,6 +325,34 @@
                 </div>
                 <button onclick="closeAdminModal()" class="w-full py-3 text-lg font-bold mc-btn mc-font">Cancel</button>
             </div>
+
+            <!-- Shop Settings View -->
+            <div id="admin-settings-view" class="hidden flex-col">
+                <h4 class="text-xl font-bold text-white mb-4 mc-font">Shop Settings</h4>
+                
+                <label class="block text-white mb-1 mc-font">Max Daily Items Per Player</label>
+                <input type="number" id="admin-daily-limit" class="w-full mc-input p-2 mb-4 text-xl font-medium" value="8" min="1">
+
+                <label class="block text-white mb-1 mc-font">Shipping Fee (Emeralds Per Item)</label>
+                <input type="number" id="admin-shipping-fee" class="w-full mc-input p-2 mb-6 text-xl font-medium" value="1" min="0">
+
+                <div class="flex gap-2">
+                    <button onclick="closeAdminModal()" class="w-1/3 py-3 text-lg font-bold mc-btn mc-font">Cancel</button>
+                    <button onclick="saveAdminSettings()" class="w-2/3 py-3 text-lg font-bold mc-btn mc-font text-[#55ff55]">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Broadcast View -->
+            <div id="admin-broadcast-view" class="hidden flex-col">
+                <h4 class="text-xl font-bold text-white mb-4 mc-font">Broadcast Announcement</h4>
+                <p class="text-[#a8a8a8] text-sm mb-2">This message will appear at the top of the screen for all visitors.</p>
+                <textarea id="admin-broadcast-text" rows="3" class="w-full mc-input p-2 mb-4 font-medium" placeholder="Ex: Expect delivery delays due to high order volume!"></textarea>
+                
+                <div class="flex gap-2">
+                    <button onclick="closeAdminModal()" class="w-1/3 py-3 text-lg font-bold mc-btn mc-font">Cancel</button>
+                    <button onclick="sendBroadcast()" class="w-2/3 py-3 text-lg font-bold mc-btn mc-font text-[#ffaa00]">Send Broadcast</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -316,10 +360,10 @@
     <div id="admin-auth-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
         <div class="mc-panel p-6 max-w-sm w-full border-2 border-[#a824e3]">
             <h3 class="text-2xl font-bold text-white text-shadow mc-font mb-4 text-center">Admin Access</h3>
-            <input type="password" id="admin-pin-input" placeholder="Enter Secret Code" class="w-full mc-input p-3 mb-4 text-xl font-medium text-center">
+            <input type="password" id="admin-pin-input" placeholder="Enter Secret Code" class="w-full mc-input p-3 mb-4 text-xl font-medium text-center" onkeydown="if(event.key === 'Enter') verifyAdminCode()">
             <div class="flex gap-2">
                 <button onclick="closeAdminAuthModal()" class="w-1/3 py-2 font-bold mc-btn mc-font text-sm">Cancel</button>
-                <button onclick="verifyAdminCode()" class="w-2/3 py-2 font-bold mc-btn mc-font text-[#55ff55] tracking-wider">Verify</button>
+                <button id="verify-btn" onclick="verifyAdminCode()" class="w-2/3 py-2 font-bold mc-btn mc-font text-[#55ff55] tracking-wider">Verify</button>
             </div>
         </div>
     </div>
@@ -403,7 +447,9 @@
 
         window.cart = []; 
         let cart = window.cart;
-        const MAX_DAILY_ITEMS = 8;
+        let MAX_DAILY_ITEMS = 8;
+        let SHIPPING_FEE_PER_ITEM = 1;
+        let STORE_LOCKED = false;
         window.isFlashSaleCurrentlyActive = false;
         window.manualFlashSaleEndTime = null;
         window.activeEventType = 'Global Flash Sale';
@@ -442,7 +488,7 @@
         // Calculates sum totals of each currency block
         function calculateTotal() {
             const totals = {};
-            let shippingFee = cart.length; 
+            let shippingFee = cart.length * SHIPPING_FEE_PER_ITEM; 
 
             // Group items by material to handle BOGO logic
             const materialGroups = {};
@@ -635,7 +681,7 @@
             const xpText = document.getElementById('xp-level-text');
             const fillPercentage = (cart.length / MAX_DAILY_ITEMS) * 100;
             
-            xpFill.style.width = `${fillPercentage}%`;
+            xpFill.style.width = `${Math.min(fillPercentage, 100)}%`;
             xpText.innerText = cart.length;
             
             if(cart.length >= MAX_DAILY_ITEMS) {
@@ -648,7 +694,7 @@
             
             const shippingFeeDisplay = document.getElementById('shipping-fee-display');
             if (shippingFeeDisplay) {
-                const fee = cart.length;
+                const fee = cart.length * SHIPPING_FEE_PER_ITEM;
                 shippingFeeDisplay.innerText = `+${fee} Emerald${fee !== 1 ? 's' : ''}`;
             }
 
@@ -717,6 +763,11 @@
         }
 
         function initiateCheckout() {
+            if (STORE_LOCKED) {
+                showSimpleMessage("The store is currently in Lockdown Mode. No orders can be placed right now. Please check back later!");
+                return;
+            }
+
             let name = localStorage.getItem('customerName');
             if (!name) {
                 openProfileModal(true);
@@ -761,7 +812,7 @@
                 : "0 Items";
 
             const itemList = cart.map(i => `- **${i.name}** (${i.price})`).join('\n');
-            const fee = cart.length;
+            const fee = cart.length * SHIPPING_FEE_PER_ITEM;
             
             let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
@@ -1050,7 +1101,7 @@
             }
 
             if (BACKEND_URL && BACKEND_URL.trim() !== "") {
-                const btn = document.querySelector('#admin-auth-modal button:nth-child(2)');
+                const btn = document.getElementById('verify-btn');
                 const originalText = btn.innerText;
                 btn.innerText = "Checking...";
                 btn.disabled = true;
@@ -1069,7 +1120,9 @@
                         showSimpleMessage("Access Denied: Invalid Code!");
                     }
                 } catch(err) {
-                    showSimpleMessage("Error connecting to Cloudflare backend.");
+                    // Upgraded error message so you know if it's a Cloudflare connection issue
+                    showSimpleMessage("Error connecting to Cloudflare backend! Check if your Worker is deployed.");
+                    console.error("Cloudflare connection error:", err);
                 } finally {
                     btn.innerText = originalText;
                     btn.disabled = false;
@@ -1084,11 +1137,16 @@
         // ==========================================
         function openAdminModal() {
             document.getElementById('admin-modal').classList.remove('hidden');
+            
+            // Reset all views to hidden
+            const views = ['admin-stock-view', 'admin-events-view', 'admin-settings-view', 'admin-broadcast-view'];
+            views.forEach(v => {
+                document.getElementById(v).classList.add('hidden');
+                document.getElementById(v).classList.remove('flex');
+            });
+            
+            // Show main menu
             document.getElementById('admin-main-view').classList.remove('hidden');
-            document.getElementById('admin-stock-view').classList.add('hidden');
-            document.getElementById('admin-stock-view').classList.remove('flex');
-            document.getElementById('admin-events-view').classList.add('hidden');
-            document.getElementById('admin-events-view').classList.remove('flex');
         }
 
         function closeAdminModal() {
@@ -1172,6 +1230,78 @@
             
             renderProducts(currentCat, query);
             showSimpleMessage("Inventory stock updated successfully!");
+        }
+
+        function showSettingsManager() {
+            document.getElementById('admin-main-view').classList.add('hidden');
+            document.getElementById('admin-settings-view').classList.remove('hidden');
+            document.getElementById('admin-settings-view').classList.add('flex');
+            
+            document.getElementById('admin-daily-limit').value = MAX_DAILY_ITEMS;
+            document.getElementById('admin-shipping-fee').value = SHIPPING_FEE_PER_ITEM;
+        }
+
+        function saveAdminSettings() {
+            const newLimit = parseInt(document.getElementById('admin-daily-limit').value);
+            const newFee = parseInt(document.getElementById('admin-shipping-fee').value);
+            
+            if (!isNaN(newLimit) && newLimit > 0) MAX_DAILY_ITEMS = newLimit;
+            if (!isNaN(newFee) && newFee >= 0) SHIPPING_FEE_PER_ITEM = newFee;
+            
+            closeAdminModal();
+            updateCart(); // Force UI update for shipping/xp bar
+            showSimpleMessage("Shop Settings updated successfully!");
+        }
+
+        function showBroadcastManager() {
+            document.getElementById('admin-main-view').classList.add('hidden');
+            document.getElementById('admin-broadcast-view').classList.remove('hidden');
+            document.getElementById('admin-broadcast-view').classList.add('flex');
+            document.getElementById('admin-broadcast-text').value = "";
+        }
+
+        function sendBroadcast() {
+            const text = document.getElementById('admin-broadcast-text').value.trim();
+            if (text) {
+                document.getElementById('announcement-text').innerText = text;
+                document.getElementById('announcement-banner').classList.remove('hidden');
+                closeAdminModal();
+                showSimpleMessage("Announcement broadcasted successfully!");
+            } else {
+                showSimpleMessage("Message cannot be empty.");
+            }
+        }
+
+        function toggleLockdown() {
+            STORE_LOCKED = !STORE_LOCKED;
+            const btn = document.getElementById('admin-lockdown-btn');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
+            if (STORE_LOCKED) {
+                btn.innerHTML = "🔒 Unlock Store";
+                btn.classList.remove('text-[#ff5555]');
+                btn.classList.add('text-[#55ff55]');
+                
+                // Visually disable the checkout button
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.innerHTML = "🔒 Store Locked";
+                }
+                
+                showSimpleMessage("🚨 STORE LOCKED! Customers can no longer check out.");
+            } else {
+                btn.innerHTML = "🔓 Lockdown Store";
+                btn.classList.add('text-[#ff5555]');
+                btn.classList.remove('text-[#55ff55]');
+                
+                // Restore the checkout button
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerHTML = "Checkout Order";
+                }
+
+                showSimpleMessage("✅ STORE UNLOCKED! Checkout re-enabled.");
+            }
         }
 
         // Fallback local-only trigger function
