@@ -242,12 +242,6 @@
         <span id="b2g1-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
     </div>
 
-    <!-- Buy 2 Get 1 25% Off Banner -->
-    <div id="b2g125-sale-banner" class="hidden bg-gradient-to-r from-pink-400 to-rose-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-pink-700 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🛍️ BUY 2 GET 1 25% OFF! (CHEAPEST ITEMS DISCOUNTED) 🛍️</span>
-        <span id="b2g125-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
     <!-- Flat Rate Diamond Banner -->
     <div id="flatrate-sale-banner" class="hidden bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-cyan-800 z-40 relative">
         <span class="mc-font text-xl text-shadow animate-pulse">💎 ABSOLUTE MADNESS! EVERY ITEM COSTS EXACTLY 1 DIAMOND! 💎</span>
@@ -409,12 +403,6 @@
             </div>
             
             <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                <!-- Global Duration Setting -->
-                <div class="bg-[#262626] p-3 border-2 border-[#141515]">
-                    <h4 class="text-lg font-bold text-[#ffaa00] text-shadow-sm mb-2 mc-font">Event Duration (Minutes)</h4>
-                    <input type="number" id="admin-duration-input" value="5" min="1" class="w-full mc-input p-2 text-xl font-medium bg-[#1a1a1a] text-center">
-                </div>
-
                 <!-- Flash Sale Control -->
                 <div>
                     <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Flash Sale Control</h4>
@@ -483,7 +471,6 @@
                     <button onclick="adminStartAntiMetaSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aa00aa]">🕷️ Start Anti-Meta Sale</button>
                     <button onclick="adminStartBulkSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffff55]">🛒 Start Bulk Bonus</button>
                     <button onclick="adminStartB2G1Sale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">🛍️ Start Buy 2 Get 1 Free</button>
-                    <button onclick="adminStartB2G125Sale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffaaaa]">🛍️ Start Buy 2 Get 1 (25% Off)</button>
                 </div>
                 
                 <!-- Crazy Events -->
@@ -631,7 +618,6 @@
                 i.isAntiMetaDiscounted = false;
                 i.isBulkDiscounted = false;
                 i.isB2G1Discounted = false;
-                i.isB2G125Discounted = false;
                 i.isFlatRateDiscounted = false;
                 i.isSTierDiscounted = false;
                 i.isProgressiveDiscounted = false;
@@ -689,27 +675,6 @@
                     for (let obj of eligibleItems) {
                         if (discountsApplied < freeCredits) {
                             cart[obj.index].isB2G1Discounted = true;
-                            discountsApplied++;
-                        }
-                    }
-                }
-
-                // Buy 2 Get 1 25% Off Check
-                if (window.isB2G125SaleActive) {
-                    let discountCredits = Math.floor(cart.length / 3);
-                    let eligibleItems = cart.map((item, index) => ({ item, index }));
-                        
-                    eligibleItems.forEach(obj => {
-                        const priceStr = obj.item.price.split(':')[1] || obj.item.price;
-                        obj.parsedAmount = parseInt(priceStr.trim().split(' ')[0]) || 0;
-                    });
-                    // Sort ascending to make the cheapest items discounted
-                    eligibleItems.sort((a, b) => a.parsedAmount - b.parsedAmount);
-                    
-                    let discountsApplied = 0;
-                    for (let obj of eligibleItems) {
-                        if (discountsApplied < discountCredits) {
-                            cart[obj.index].isB2G125Discounted = true;
                             discountsApplied++;
                         }
                     }
@@ -781,10 +746,6 @@
                         // --- 50% OFF DISCOUNTS ---
                         else if (item.isArmorDiscounted || item.isWeaponDiscounted || item.isRangedDiscounted || item.isToolDiscounted || item.isDiamondDiscounted || item.isGoldDiscounted || item.isIronDiscounted || item.isLapisDiscounted || item.isMaxTierDiscounted || item.isOverstockDiscounted || item.isNetherDiscounted || item.isBulkDiscounted) {
                             finalAmount = Math.max(1, Math.ceil(amount / 2));
-                        }
-                        // --- 25% OFF DISCOUNTS ---
-                        else if (item.isB2G125Discounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount * 0.75));
                         }
                         
                         totals[material] = (totals[material] || 0) + finalAmount;
@@ -910,12 +871,6 @@
                 } else if (i.isPeasantDiscounted) {
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#aaaaaa]">Peasant Uprising: FREE</span>`;
                      bogoBadge = `<span class="ml-2 text-[10px] bg-[#aaaaaa] text-black px-1.5 py-0.5 border border-[#555555] shadow-sm uppercase font-bold tracking-widest">100% OFF</span>`;
-                } else if (i.isB2G125Discounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.75));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaaaa]">B2G1 25% Off: ${discountedAmt} ${mat}</span>`;
-                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#ffaaaa] text-black px-1.5 py-0.5 border border-[#aa5555] shadow-sm uppercase font-bold tracking-widest">25% OFF</span>`;
                 } else if (i.isSTierDiscounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
@@ -1140,7 +1095,6 @@
                     { state: window.isAntiMetaSaleActive, flag: 'isAntiMetaDiscounted', emoji: '🕷️', name: 'ANTI-META BLOWOUT', off: '75%' },
                     { state: window.isBulkSaleActive, flag: 'isBulkDiscounted', emoji: '🛒', name: 'BULK BUYER BONUS', off: '50%' },
                     { state: window.isB2G1SaleActive, flag: 'isB2G1Discounted', emoji: '🛍️', name: 'BUY 2 GET 1 FREE', off: '100%' },
-                    { state: window.isB2G125SaleActive, flag: 'isB2G125Discounted', emoji: '🛍️', name: 'BUY 2 GET 1 25% OFF', off: '25%' },
                     { state: window.isFlatRateDiamondActive, flag: 'isFlatRateDiscounted', emoji: '💎', name: '1 DIAMOND FLAT RATE', off: 'Converted Pricing' },
                     { state: window.isSTierMadnessActive, flag: 'isSTierDiscounted', emoji: '🔥', name: 'S-TIER MADNESS', off: '90%' },
                     { state: window.isProgressiveOverloadActive, flag: 'isProgressiveDiscounted', emoji: '📈', name: 'PROGRESSIVE OVERLOAD', off: `${cart.length * 10}%` },
@@ -1493,7 +1447,6 @@
             { id: 'AntiMeta', name: 'Anti-Meta Blowout', emoji: '🕷️', msg: 'Smite, Bane of Arthropods, Knockback, Punch, Lure, and Thorns are 75% OFF!', state: 'isAntiMetaSaleActive', end: 'manualAntiMetaSaleEndTime', banner: 'antimeta-sale-banner', timer: 'antimeta-sale-timer' },
             { id: 'Bulk', name: 'Bulk Buyer Bonus', emoji: '🛒', msg: 'Buy 5 or more items to get 50% OFF your entire order!', state: 'isBulkSaleActive', end: 'manualBulkSaleEndTime', banner: 'bulk-sale-banner', timer: 'bulk-sale-timer' },
             { id: 'B2G1', name: 'Buy 2 Get 1 FREE', emoji: '🛍️', msg: 'For every 3 items, the cheapest 1 is absolutely FREE!', state: 'isB2G1SaleActive', end: 'manualB2G1SaleEndTime', banner: 'b2g1-sale-banner', timer: 'b2g1-sale-timer' },
-            { id: 'B2G125', name: 'Buy 2 Get 1 25% OFF', emoji: '🛍️', msg: 'For every 3 items, the cheapest 1 is 25% OFF!', state: 'isB2G125SaleActive', end: 'manualB2G125SaleEndTime', banner: 'b2g125-sale-banner', timer: 'b2g125-sale-timer' },
             { id: 'FlatRate', name: '1 Diamond Flat Rate', emoji: '💎', msg: 'Absolute Madness! EVERY item in the store costs exactly 1 Diamond!', state: 'isFlatRateDiamondActive', end: 'manualFlatRateDiamondEndTime', banner: 'flatrate-sale-banner', timer: 'flatrate-sale-timer' },
             { id: 'STier', name: 'S-Tier Madness', emoji: '🔥', msg: 'Sharpness, Smite, Sweeping Edge, Silk Touch, Swift Sneak... If it starts with S, it\'s 90% OFF!', state: 'isSTierMadnessActive', end: 'manualSTierMadnessEndTime', banner: 'stier-sale-banner', timer: 'stier-sale-timer' },
             { id: 'Progressive', name: 'Progressive Overload', emoji: '📈', msg: '1 item = 10% off. 8 items = 80% off your ENTIRE order! Add more to save more!', state: 'isProgressiveOverloadActive', end: 'manualProgressiveOverloadEndTime', banner: 'progressive-sale-banner', timer: 'progressive-sale-timer' },
@@ -1532,17 +1485,14 @@
 
             // Trigger mapping for the HTML buttons
             window[`adminStart${s.id}Sale`] = function() {
-                const durationMins = parseInt(document.getElementById('admin-duration-input')?.value) || 5;
-                const durationMs = durationMins * 60 * 1000;
-                
                 closeAdminModal();
-                showSimpleMessage(`Secret code activated! Manually starting a local ${durationMins}-minute ${s.name}!`);
-                window[s.end] = new Date(new Date().getTime() + durationMs);
+                showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute ${s.name}!`);
+                window[s.end] = new Date(new Date().getTime() + EVENT_DURATION_MS);
                 
                 fetch(FLASH_SALE_WEBHOOK, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: `${s.emoji} **${s.name.toUpperCase()} ALERT!** ${s.emoji}\nA ${durationMins}-minute ${s.name} has started! ${s.msg}` })
+                    body: JSON.stringify({ content: `${s.emoji} **${s.name.toUpperCase()} ALERT!** ${s.emoji}\nA ${EVENT_DURATION_MINS}-minute ${s.name} has started! ${s.msg}` })
                 }).catch(e => console.log("Webhook error:", e));
                 
                 checkFn(); // Force update UI immediately
@@ -1671,17 +1621,14 @@
 
         // Fallback local-only trigger function
         function triggerManualFlashSale() {
-            const durationMins = parseInt(document.getElementById('admin-duration-input')?.value) || 5;
-            const durationMs = durationMins * 60 * 1000;
-            
-            showSimpleMessage(`Secret code activated! Manually starting a local ${durationMins}-minute Flash Sale!`);
-            window.manualFlashSaleEndTime = new Date(new Date().getTime() + durationMs);
+            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Flash Sale!`);
+            window.manualFlashSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
             
             fetch(FLASH_SALE_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    content: `⚡ **FLASH SALE ALERT!** ⚡\nA ${durationMins}-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!` 
+                    content: `⚡ **FLASH SALE ALERT!** ⚡\nA ${EVENT_DURATION_MINS}-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!` 
                 })
             }).catch(err => console.log("Webhook error:", err));
 
@@ -1689,17 +1636,14 @@
         }
 
         function triggerManualBogoSale() {
-            const durationMins = parseInt(document.getElementById('admin-duration-input')?.value) || 5;
-            const durationMs = durationMins * 60 * 1000;
-            
-            showSimpleMessage(`Secret code activated! Manually starting a local ${durationMins}-minute BOGO Sale!`);
-            window.manualBogoSaleEndTime = new Date(new Date().getTime() + durationMs);
+            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute BOGO Sale!`);
+            window.manualBogoSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
             
             fetch(FLASH_SALE_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    content: `🎁 **BOGO SALE ALERT!** 🎁\nA ${durationMins}-minute Buy 1 Get 1 75% OFF Sale has just started! (Excludes Tier I items like Mending). Hurry!` 
+                    content: `🎁 **BOGO SALE ALERT!** 🎁\nA ${EVENT_DURATION_MINS}-minute Buy 1 Get 1 75% OFF Sale has just started! (Excludes Tier I items like Mending). Hurry!` 
                 })
             }).catch(err => console.log("Webhook error:", err));
 
@@ -1707,17 +1651,14 @@
         }
 
         function triggerManualFreeShipping() {
-            const durationMins = parseInt(document.getElementById('admin-duration-input')?.value) || 5;
-            const durationMs = durationMins * 60 * 1000;
-            
-            showSimpleMessage(`Secret code activated! Manually starting a local ${durationMins}-minute Free Delivery Event!`);
-            window.manualFreeShippingEndTime = new Date(new Date().getTime() + durationMs);
+            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Free Delivery Event!`);
+            window.manualFreeShippingEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
             
             fetch(FLASH_SALE_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    content: `🚀 **FREE DELIVERY ALERT!** 🚀\nA ${durationMins}-minute Free Delivery Event has started! 0 Emerald shipping fees for a limited time! Hurry!` 
+                    content: `🚀 **FREE DELIVERY ALERT!** 🚀\nA ${EVENT_DURATION_MINS}-minute Free Delivery Event has started! 0 Emerald shipping fees for a limited time! Hurry!` 
                 })
             }).catch(err => console.log("Webhook error:", err));
 
@@ -1725,17 +1666,14 @@
         }
 
         function triggerManualArmorSale() {
-            const durationMins = parseInt(document.getElementById('admin-duration-input')?.value) || 5;
-            const durationMs = durationMins * 60 * 1000;
-            
-            showSimpleMessage(`Secret code activated! Manually starting a local ${durationMins}-minute Armor Sale!`);
-            window.manualArmorSaleEndTime = new Date(new Date().getTime() + durationMs);
+            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Armor Sale!`);
+            window.manualArmorSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
             
             fetch(FLASH_SALE_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    content: `🛡️ **ARMOR EVENT ALERT!** 🛡️\nA ${durationMins}-minute Armor Sale has started! All Armor enchantments are 50% OFF! Hurry!` 
+                    content: `🛡️ **ARMOR EVENT ALERT!** 🛡️\nA ${EVENT_DURATION_MINS}-minute Armor Sale has started! All Armor enchantments are 50% OFF! Hurry!` 
                 })
             }).catch(err => console.log("Webhook error:", err));
 
