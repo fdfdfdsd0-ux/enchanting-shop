@@ -317,10 +317,11 @@
     <!-- Firebase Initialization -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = {
+        // Automatically use the environment's secure config to avoid permission denied errors
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
             authDomain: "weblox-1f8b0.firebaseapp.com",
             projectId: "weblox-1f8b0",
@@ -342,13 +343,15 @@
         window.onSnapshot = onSnapshot;
         window.collection = collection;
 
-        // Initialize Authentication for future cloud saving or interactions
+        // Initialize Authentication for cloud saving
         async function initAuth() {
             try {
-                // Since this uses a custom external Firebase project, the environment's custom token will fail.
-                // We bypass it and directly sign in anonymously to your specific database.
-                await signInAnonymously(auth);
-                console.log("Firebase initialized successfully with user ID:", auth.currentUser.uid);
+                // Must authenticate properly with the environment token to avoid permission errors
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
                 
                 // Signal that auth is ready so the main script can start Firestore listeners
                 window.dispatchEvent(new Event('firebase-auth-ready'));
@@ -371,7 +374,8 @@
         // FIRESTORE REALTIME SYNC
         // ==========================================
         window.addEventListener('firebase-auth-ready', () => {
-            if (!window.db) return;
+            // Guard: Make sure user is fully authenticated before trying to read from DB
+            if (!window.db || !window.auth.currentUser) return;
             
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
             
@@ -1224,7 +1228,7 @@
             const endTimeMs = new Date().getTime() + 5 * 60 * 1000; // 5 minutes
             
             // Sync ANY activated sale to Firestore so it persists on refresh for all users
-            if (window.db && window.doc && window.setDoc) {
+            if (window.db && window.doc && window.setDoc && window.auth.currentUser) {
                 try {
                     const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
                     const saleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', saleKey);
