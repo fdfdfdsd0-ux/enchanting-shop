@@ -135,8 +135,8 @@
     </header>
 
     <!-- Flash Sale Banner (Hidden by default) -->
-    <div id="flash-sale-banner" class="hidden bg-gradient-to-r from-red-600 to-yellow-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡</span>
+    <div id="flash-sale-banner" class="hidden text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative">
+        <span id="flash-sale-text" class="mc-font text-xl text-shadow animate-pulse">⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡</span>
         <span id="flash-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
     </div>
 
@@ -268,6 +268,50 @@
         </div>
     </div>
 
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="mc-panel p-6 max-w-md w-full border-2 border-[#ff5555]">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-[#ff5555] text-shadow mc-font">Admin Panel</h3>
+                <button onclick="closeAdminModal()" class="text-[#a8a8a8] hover:text-white font-bold text-xl font-sans">X</button>
+            </div>
+            
+            <!-- Main Admin Menu -->
+            <div id="admin-main-view" class="space-y-4">
+                <button onclick="adminTriggerSale('Global Flash Sale')" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#ffaa00]">
+                    ⚡ Trigger Global Flash Sale
+                </button>
+                <button onclick="showEventsManager()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#55ffff]">
+                    🎉 Trigger Special Event
+                </button>
+                <button onclick="showStockManager()" class="w-full py-3 text-xl font-bold mc-btn mc-font tracking-wider text-[#55ff55]">
+                    📦 Manage Stock
+                </button>
+            </div>
+
+            <!-- Stock Manager View -->
+            <div id="admin-stock-view" class="hidden flex-col h-[60vh]">
+                <h4 class="text-xl font-bold text-white mb-2 mc-font">Select In-Stock Items</h4>
+                <div id="stock-list-container" class="flex-grow overflow-y-auto space-y-1 pr-2 mb-4 bg-black border-2 border-[#555] p-2">
+                    <!-- Populated dynamically by JS -->
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="closeAdminModal()" class="w-1/3 py-3 text-lg font-bold mc-btn mc-font">Cancel</button>
+                    <button onclick="saveStock()" class="w-2/3 py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ff55]">Save & Apply</button>
+                </div>
+            </div>
+
+            <!-- Special Events View -->
+            <div id="admin-events-view" class="hidden flex-col h-[60vh]">
+                <h4 class="text-xl font-bold text-white mb-2 mc-font">Trigger Special Event (5 Min)</h4>
+                <div id="events-list-container" class="flex-grow overflow-y-auto space-y-2 pr-2 mb-4 bg-black border-2 border-[#555] p-2">
+                    <!-- Populated dynamically by JS -->
+                </div>
+                <button onclick="closeAdminModal()" class="w-full py-3 text-lg font-bold mc-btn mc-font">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Core UI Script (Loads instantly, even offline or locally) -->
     <script>
         // ==========================================
@@ -281,7 +325,7 @@
         // Format: "EnchantmentName Tier" (e.g. "Protection IV")
         // Items on this list get a green "In Stock" badge, but ALL items can still be ordered!
         // ==========================================
-        const inStockItems = [
+        let inStockItems = [
             "Mending I",
             "Respiration III",
             "Unbreaking III",
@@ -350,6 +394,23 @@
         const MAX_DAILY_ITEMS = 8;
         window.isFlashSaleCurrentlyActive = false;
         window.manualFlashSaleEndTime = null;
+        window.activeEventType = 'Global Flash Sale';
+
+        // Custom Event Definitions
+        const EVENT_DETAILS = {
+            'Global Flash Sale': { text: '⚡ FLASH SALE! 50% OFF ALL ENCHANTMENTS! ⚡', color: 'from-red-600 to-yellow-500' },
+            'Weapon Event': { text: '⚔️ WEAPON EVENT! 50% OFF ALL WEAPONS! ⚔️', color: 'from-red-800 to-gray-700' },
+            'Ranged Event': { text: '🏹 RANGED EVENT! 50% OFF RANGED ITEMS! 🏹', color: 'from-green-800 to-green-600' },
+            'Tool Event': { text: '⛏️ TOOL EVENT! 50% OFF ALL TOOLS! ⛏️', color: 'from-blue-700 to-blue-500' },
+            'Diamond Rush': { text: '💎 DIAMOND RUSH! 50% OFF DIAMOND ENCHANTS! 💎', color: 'from-cyan-600 to-blue-500' },
+            'Gold Rush': { text: '🪙 GOLD RUSH! 50% OFF GOLD ENCHANTS! 🪙', color: 'from-yellow-600 to-yellow-400' },
+            'Iron Rush': { text: '🛡️ IRON RUSH! 50% OFF IRON ENCHANTS! 🛡️', color: 'from-gray-500 to-gray-300' },
+            'Lapis Liquidation': { text: '💧 LAPIS LIQUIDATION! 50% OFF LAPIS ENCHANTS! 💧', color: 'from-blue-600 to-blue-400' },
+            'Tier I Blowout': { text: '💥 TIER I BLOWOUT! 75% OFF TIER I ENCHANTS! 💥', color: 'from-orange-600 to-red-500' },
+            'Max Tier Madness': { text: '🔥 MAX TIER MADNESS! 50% OFF TIER IV & V! 🔥', color: 'from-purple-700 to-purple-500' },
+            'Overstock Sale': { text: '📦 OVERSTOCK SALE! 50% OFF IN-STOCK ITEMS! 📦', color: 'from-green-600 to-emerald-400' },
+            'BOGO 75% Off': { text: '🛍️ BOGO 75% OFF (Except Tier I)! 🛍️', color: 'from-pink-600 to-purple-500' }
+        };
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -371,29 +432,91 @@
             const totals = {};
             let shippingFee = cart.length; 
 
+            // Group items by material to handle BOGO logic
+            const materialGroups = {};
+
             cart.forEach(item => {
+                const tierPart = item.price.split(':')[0].trim();
                 const costPart = item.price.split(':')[1];
+                
                 if (costPart) {
                     const cleanCost = costPart.trim();
                     const parts = cleanCost.split(' ');
-                    const amount = parseInt(parts[0]);
+                    const originalAmount = parseInt(parts[0]);
                     let material = parts.slice(1).join(' ');
 
                     if (material === "Emerald") material = "Emeralds";
                     if (material === "Diamond") material = "Diamonds";
-
-                    if (!isNaN(amount) && material) {
-                        totals[material] = (totals[material] || 0) + amount;
+                    
+                    if (!isNaN(originalAmount) && material) {
+                        if (!materialGroups[material]) materialGroups[material] = [];
+                        materialGroups[material].push({ originalAmount, tierPart, category: item.category, name: item.name });
                     }
                 }
             });
 
-            // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
-            if (window.isFlashSaleCurrentlyActive) {
-                for (let mat in totals) {
-                    // Halve the cost, rounding up so there's always a min cost of 1
-                    totals[mat] = Math.max(1, Math.ceil(totals[mat] / 2)); 
+            for (const [material, items] of Object.entries(materialGroups)) {
+                let amountSum = 0;
+                let bogoEligible = [];
+                let bogoIneligible = [];
+
+                items.forEach(item => {
+                    let amount = item.originalAmount;
+
+                    if (window.isFlashSaleCurrentlyActive && window.activeEventType) {
+                        if (window.activeEventType === 'BOGO 75% Off') {
+                            // Split items into BOGO eligible (Tier II+) and ineligible (Tier I)
+                            if (item.tierPart !== 'I') {
+                                bogoEligible.push(amount);
+                            } else {
+                                bogoIneligible.push(amount);
+                            }
+                            return; // Skip standard discount calculation for BOGO logic
+                        }
+
+                        // --- TARGETED EVENT DISCOUNTS (Standard) ---
+                        let discount = 0;
+                        if (window.activeEventType === 'Global Flash Sale') discount = 0.5;
+                        else if (window.activeEventType === 'Weapon Event' && item.category === 'Weapons') discount = 0.5;
+                        else if (window.activeEventType === 'Ranged Event' && item.category === 'Ranged') discount = 0.5;
+                        else if (window.activeEventType === 'Tool Event' && item.category === 'Tools & General') discount = 0.5;
+                        else if (window.activeEventType === 'Diamond Rush' && material === 'Diamonds') discount = 0.5;
+                        else if (window.activeEventType === 'Gold Rush' && material === 'Gold') discount = 0.5;
+                        else if (window.activeEventType === 'Iron Rush' && material === 'Iron') discount = 0.5;
+                        else if (window.activeEventType === 'Lapis Liquidation' && material === 'Lapis') discount = 0.5;
+                        else if (window.activeEventType === 'Tier I Blowout' && item.tierPart === 'I') discount = 0.75;
+                        else if (window.activeEventType === 'Max Tier Madness' && (item.tierPart === 'IV' || item.tierPart === 'V')) discount = 0.5;
+                        else if (window.activeEventType === 'Overstock Sale' && inStockItems.includes(`${item.name} ${item.tierPart}`)) discount = 0.5;
+
+                        if (discount > 0) {
+                            amount = Math.max(1, Math.ceil(amount * (1 - discount)));
+                        }
+                    }
+                    amountSum += amount;
+                });
+
+                // Calculate BOGO if active
+                if (window.isFlashSaleCurrentlyActive && window.activeEventType === 'BOGO 75% Off') {
+                    // Sort descending so the cheapest items get the 75% discount
+                    bogoEligible.sort((a, b) => b - a);
+                    
+                    for (let i = 0; i < bogoEligible.length; i++) {
+                        if (i % 2 === 1) {
+                            // 75% off the second (cheaper) item
+                            amountSum += Math.max(1, Math.ceil(bogoEligible[i] * 0.25));
+                        } else {
+                            // Full price for the first item
+                            amountSum += bogoEligible[i];
+                        }
+                    }
+                    
+                    // Add all ineligible items (Tier I) at full price
+                    for (let i = 0; i < bogoIneligible.length; i++) {
+                        amountSum += bogoIneligible[i];
+                    }
                 }
+
+                totals[material] = amountSum;
             }
 
             if (shippingFee > 0) {
@@ -441,7 +564,7 @@
                         const stockBadge = isStocked ? `<span class="ml-2 text-[11px] bg-[#55ff55] text-black border border-[#22aa22] px-1.5 py-0.5 shadow-sm font-sans tracking-wider uppercase font-bold">In Stock</span>` : '';
 
                         return `
-                            <button onclick="addToCart('${item.name}', '${c}')" class="w-full flex justify-between items-center px-3 py-2 mb-2 mc-enchant-btn">
+                            <button onclick="addToCart('${item.name}', '${c}', '${cat.category}')" class="w-full flex justify-between items-center px-3 py-2 mb-2 mc-enchant-btn">
                                 <div class="flex items-center">
                                     <span class="font-bold text-shadow-sm text-white">${tier}</span>
                                     ${stockBadge}
@@ -463,7 +586,7 @@
             });
         }
 
-        function addToCart(name, price) {
+        function addToCart(name, price, category) {
             const { ordersToday } = getDailyOrderData();
             
             if (ordersToday + cart.length >= MAX_DAILY_ITEMS) {
@@ -471,7 +594,7 @@
                 return;
             }
 
-            cart.push({ name, price });
+            cart.push({ name, price, category });
             updateCart();
         }
 
@@ -630,8 +753,8 @@
             
             let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(Includes +${fee} Emeralds shipping fee)*`;
 
-            if (window.isFlashSaleCurrentlyActive) {
-                receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
+            if (window.isFlashSaleCurrentlyActive && window.activeEventType) {
+                receiptText += `\n\n⚡ **BOUGHT DURING ${window.activeEventType.toUpperCase()} (DISCOUNTS APPLIED)** ⚡`;
             }
 
             const modal = document.getElementById('checkout-modal');
@@ -835,7 +958,15 @@
             if (isScheduledActive || isManualActive) {
                 if (!window.isFlashSaleCurrentlyActive) {
                     window.isFlashSaleCurrentlyActive = true;
-                    document.getElementById('flash-sale-banner').classList.remove('hidden');
+                    if (!window.activeEventType) window.activeEventType = 'Global Flash Sale';
+                    
+                    const banner = document.getElementById('flash-sale-banner');
+                    const details = EVENT_DETAILS[window.activeEventType] || EVENT_DETAILS['Global Flash Sale'];
+                    
+                    banner.className = `bg-gradient-to-r ${details.color} text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative block`;
+                    document.getElementById('flash-sale-text').innerText = details.text;
+                    
+                    banner.classList.remove('hidden');
                     updateCart(); 
                 }
                 
@@ -891,25 +1022,119 @@
                 if (keyBuffer.includes(SECRET_CODE)) {
                     keyBuffer = ""; // Reset buffer so it doesn't trigger twice
                     
-                    if (window.triggerGlobalSale) {
-                        window.triggerGlobalSale(); // Fire the global database update!
-                    } else {
-                        triggerManualFlashSale(); // Fallback if Firebase hasn't loaded yet
-                    }
+                    openAdminModal(); // Open admin panel instead of instantly starting sale
                 }
             }
         });
 
+        // ==========================================
+        // ADMIN PANEL LOGIC
+        // ==========================================
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-main-view').classList.remove('hidden');
+            document.getElementById('admin-stock-view').classList.add('hidden');
+            document.getElementById('admin-stock-view').classList.remove('flex');
+            document.getElementById('admin-events-view').classList.add('hidden');
+            document.getElementById('admin-events-view').classList.remove('flex');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function adminTriggerSale(eventName) {
+            closeAdminModal();
+            if (window.triggerGlobalSale) {
+                window.triggerGlobalSale(eventName); 
+            } else {
+                triggerManualFlashSale(eventName); 
+            }
+        }
+
+        function showEventsManager() {
+            document.getElementById('admin-main-view').classList.add('hidden');
+            document.getElementById('admin-events-view').classList.remove('hidden');
+            document.getElementById('admin-events-view').classList.add('flex');
+            
+            const container = document.getElementById('events-list-container');
+            container.innerHTML = '';
+            
+            Object.keys(EVENT_DETAILS).forEach(eventName => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 mb-2 bg-[#2a2a2a] hover:bg-[#444] border-2 border-[#444] hover:border-white text-white font-bold mc-font text-lg transition-colors";
+                btn.innerText = `▶ ${eventName}`;
+                btn.onclick = () => adminTriggerSale(eventName);
+                container.appendChild(btn);
+            });
+        }
+
+        function showStockManager() {
+            document.getElementById('admin-main-view').classList.add('hidden');
+            document.getElementById('admin-stock-view').classList.remove('hidden');
+            document.getElementById('admin-stock-view').classList.add('flex');
+            
+            const container = document.getElementById('stock-list-container');
+            container.innerHTML = '';
+            
+            // Generate checkboxes for every single tier of every item
+            storeData.forEach(cat => {
+                const catHeader = document.createElement('div');
+                catHeader.className = "text-[#ffaa00] mc-font mt-2 mb-1 border-b border-[#555]";
+                catHeader.innerText = cat.category;
+                container.appendChild(catHeader);
+
+                cat.items.forEach(item => {
+                    item.cost.split(', ').forEach(c => {
+                        const tier = c.split(':')[0].trim();
+                        const fullName = `${item.name} ${tier}`;
+                        const isChecked = inStockItems.includes(fullName) ? 'checked' : '';
+                        
+                        container.innerHTML += `
+                            <label class="flex items-center gap-3 p-1 hover:bg-[#222] cursor-pointer">
+                                <input type="checkbox" value="${fullName}" class="stock-checkbox w-5 h-5 accent-[#a824e3]" ${isChecked}>
+                                <span class="text-[#d0d0d0] text-lg font-medium">${fullName}</span>
+                            </label>
+                        `;
+                    });
+                });
+            });
+        }
+
+        function saveStock() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox');
+            
+            // Update the global inStockItems array with newly checked items
+            inStockItems = Array.from(checkboxes)
+                                .filter(cb => cb.checked)
+                                .map(cb => cb.value);
+            
+            closeAdminModal();
+            
+            // Re-render currently selected category to visually update badges
+            const activeBtn = document.querySelector('#category-list button.font-bold');
+            const currentCat = activeBtn ? activeBtn.innerText : 'All';
+            
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput ? searchInput.value : '';
+            
+            renderProducts(currentCat, query);
+            showSimpleMessage("Inventory stock updated successfully!");
+        }
+
         // Fallback local-only trigger function
-        function triggerManualFlashSale() {
-            showSimpleMessage("Secret code activated! Manually starting a local 5-minute Flash Sale!");
+        function triggerManualFlashSale(eventName) {
+            window.activeEventType = eventName || 'Global Flash Sale';
+            showSimpleMessage(`Secret code activated! Manually starting a local 5-minute ${window.activeEventType}!`);
             window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+            
+            const text = EVENT_DETAILS[window.activeEventType] ? EVENT_DETAILS[window.activeEventType].text : 'FLASH SALE!';
             
             fetch(FLASH_SALE_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    content: "⚡ **FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                    content: `⚡ **EVENT ALERT!** ⚡\nA 5-minute event has just started at the Enchanting Shop!\n**${text}**` 
                 })
             }).catch(err => console.log("Webhook error:", err));
 
@@ -962,6 +1187,7 @@
                             const data = docSnap.data();
                             if (data.endTime) {
                                 window.manualFlashSaleEndTime = new Date(data.endTime);
+                                window.activeEventType = data.eventType || 'Global Flash Sale';
                                 checkFlashSale(); // Force immediate UI update
                             }
                         }
@@ -969,15 +1195,18 @@
                         console.error("Firebase Snapshot Error (Check Firestore Rules):", error);
                     });
 
-                    window.triggerGlobalSale = async function() {
+                    window.triggerGlobalSale = async function(eventName) {
+                        window.activeEventType = eventName || 'Global Flash Sale';
                         // Immediately update local UI so it pops up instantly!
                         window.manualFlashSaleEndTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+                        
+                        const text = EVENT_DETAILS[window.activeEventType] ? EVENT_DETAILS[window.activeEventType].text : 'FLASH SALE!';
                         
                         fetch(FLASH_SALE_WEBHOOK, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ 
-                                content: "⚡ **GLOBAL FLASH SALE ALERT!** ⚡\nA 5-minute Flash Sale has just been triggered at the Enchanting Shop! Everything is 50% OFF right now! Hurry!" 
+                                content: `⚡ **GLOBAL EVENT ALERT!** ⚡\nA 5-minute event has just been triggered at the Enchanting Shop!\n**${text}**` 
                             })
                         }).catch(err => console.log("Webhook error:", err));
 
@@ -986,14 +1215,14 @@
                         const alertBox = document.createElement('div');
                         alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 mc-panel p-4 bg-black text-white text-center text-lg max-w-sm w-full shadow-lg border-2 border-[#55ff55]';
                         alertBox.innerHTML = `
-                            <p class="mb-3 font-semibold text-[#55ff55]">Global code accepted! Transmitting Flash Sale to ALL active players! ⚡</p>
+                            <p class="mb-3 font-semibold text-[#55ff55]">Event Broadcasted! Transmitting ${window.activeEventType} to ALL active players! ⚡</p>
                             <button onclick="this.parentElement.remove()" class="mc-btn px-4 py-1 text-sm font-bold">Awesome!</button>
                         `;
                         document.body.appendChild(alertBox);
 
                         const endTime = window.manualFlashSaleEndTime.getTime();
                         try {
-                            await setDoc(flashSaleRef, { endTime: endTime });
+                            await setDoc(flashSaleRef, { endTime: endTime, eventType: window.activeEventType });
                             console.log("Successfully saved to global database!");
                         } catch (e) {
                             console.error("Cloud Save Failed:", e);
