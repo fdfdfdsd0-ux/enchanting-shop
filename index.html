@@ -318,7 +318,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
@@ -340,6 +340,7 @@
         window.doc = doc;
         window.setDoc = setDoc;
         window.onSnapshot = onSnapshot;
+        window.collection = collection;
 
         // Initialize Authentication for future cloud saving or interactions
         async function initAuth() {
@@ -373,17 +374,21 @@
             if (!window.db) return;
             
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
-            const flashSaleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', 'flash_sale');
             
-            window.onSnapshot(flashSaleRef, (docSnap) => {
-                if (docSnap.exists()) {
+            // Listen to ALL sales in the store_state collection
+            const salesRef = window.collection(window.db, 'artifacts', appId, 'public', 'data', 'store_state');
+            
+            window.onSnapshot(salesRef, (snapshot) => {
+                snapshot.forEach(docSnap => {
+                    const saleKey = docSnap.id;
                     const data = docSnap.data();
-                    if (data.endTime) {
-                        activeEvents.flash.end = new Date(data.endTime);
-                        if (typeof checkAllSales === 'function') {
-                            checkAllSales(); // Force UI to update immediately
-                        }
+                    if (activeEvents[saleKey] && data.endTime) {
+                        activeEvents[saleKey].end = new Date(data.endTime);
                     }
+                });
+                
+                if (typeof checkAllSales === 'function') {
+                    checkAllSales(); // Force UI to update immediately
                 }
             }, (err) => {
                 console.error("Firestore sync error:", err);
@@ -1218,16 +1223,14 @@
             
             const endTimeMs = new Date().getTime() + 5 * 60 * 1000; // 5 minutes
             
-            // Special handling for Global Flash Sale Firestore sync
-            if (saleKey === 'flash') {
-                if (window.db && window.doc && window.setDoc) {
-                    try {
-                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
-                        const flashSaleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', 'flash_sale');
-                        await window.setDoc(flashSaleRef, { endTime: endTimeMs });
-                    } catch (e) {
-                        console.error("Failed to sync sale to Firestore, applying locally:", e);
-                    }
+            // Sync ANY activated sale to Firestore so it persists on refresh for all users
+            if (window.db && window.doc && window.setDoc) {
+                try {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+                    const saleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', saleKey);
+                    await window.setDoc(saleRef, { endTime: endTimeMs });
+                } catch (e) {
+                    console.error("Failed to sync sale to Firestore, applying locally:", e);
                 }
             }
 
