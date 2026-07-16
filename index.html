@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body { 
             font-family: 'Inter', sans-serif;
@@ -134,137 +135,8 @@
         </div>
     </header>
 
-    <!-- Flash Sale Banner (Hidden by default) -->
-    <div id="flash-sale-banner" class="hidden bg-gradient-to-r from-red-600 to-yellow-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡</span>
-        <span id="flash-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- BOGO Sale Banner (Hidden by default) -->
-    <div id="bogo-sale-banner" class="hidden bg-gradient-to-r from-green-600 to-blue-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-green-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🎁 BOGO 75% OFF ACTIVE! (Tier I Excluded) 🎁</span>
-        <span id="bogo-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Free Delivery Banner (Hidden by default) -->
-    <div id="free-shipping-banner" class="hidden bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-blue-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🚀 FREE DELIVERY EVENT! 0 EMERALD SHIPPING FEE! 🚀</span>
-        <span id="free-shipping-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Armor Sale Banner (Hidden by default) -->
-    <div id="armor-sale-banner" class="hidden bg-gradient-to-r from-purple-600 to-indigo-500 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🛡️ ARMOR EVENT! 50% OFF ALL ARMOR ENCHANTS! 🛡️</span>
-        <span id="armor-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Weapon Sale Banner -->
-    <div id="weapon-sale-banner" class="hidden bg-gradient-to-r from-gray-700 to-red-800 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">⚔️ WEAPON EVENT! 50% OFF ALL WEAPON ENCHANTS! ⚔️</span>
-        <span id="weapon-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Ranged Sale Banner -->
-    <div id="ranged-sale-banner" class="hidden bg-gradient-to-r from-green-700 to-emerald-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-green-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🏹 RANGED EVENT! 50% OFF ALL RANGED ENCHANTS! 🏹</span>
-        <span id="ranged-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Tool Sale Banner -->
-    <div id="tool-sale-banner" class="hidden bg-gradient-to-r from-yellow-700 to-orange-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-orange-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">⛏️ TOOL EVENT! 50% OFF ALL TOOLS & GENERAL ENCHANTS! ⛏️</span>
-        <span id="tool-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Diamond Sale Banner -->
-    <div id="diamond-sale-banner" class="hidden bg-gradient-to-r from-cyan-600 to-blue-400 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-cyan-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">💎 DIAMOND RUSH! 50% OFF ALL DIAMOND COSTS! 💎</span>
-        <span id="diamond-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Gold Sale Banner -->
-    <div id="gold-sale-banner" class="hidden bg-gradient-to-r from-yellow-500 to-yellow-300 text-black font-bold text-center py-3 px-4 shadow-lg border-b-4 border-yellow-700 z-40 relative">
-        <span class="mc-font text-xl text-shadow-sm animate-pulse">🧈 GOLD RUSH! 50% OFF ALL GOLD COSTS! 🧈</span>
-        <span id="gold-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-white text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Iron Sale Banner -->
-    <div id="iron-sale-banner" class="hidden bg-gradient-to-r from-gray-300 to-gray-500 text-black font-bold text-center py-3 px-4 shadow-lg border-b-4 border-gray-700 z-40 relative">
-        <span class="mc-font text-xl text-shadow-sm animate-pulse">⛓️ IRON RUSH! 50% OFF ALL IRON COSTS! ⛓️</span>
-        <span id="iron-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-white text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Lapis Sale Banner -->
-    <div id="lapis-sale-banner" class="hidden bg-gradient-to-r from-blue-700 to-indigo-800 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-blue-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🔷 LAPIS LIQUIDATION! 50% OFF ALL LAPIS COSTS! 🔷</span>
-        <span id="lapis-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Tier 1 Sale Banner -->
-    <div id="tier1-sale-banner" class="hidden bg-gradient-to-r from-pink-600 to-rose-400 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-pink-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">💥 TIER I BLOWOUT! 75% OFF ALL TIER I ENCHANTS! 💥</span>
-        <span id="tier1-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Max Tier Sale Banner -->
-    <div id="maxtier-sale-banner" class="hidden bg-gradient-to-r from-gray-900 to-purple-900 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🔥 MAX TIER MADNESS! 50% OFF TIER IV & V ENCHANTS! 🔥</span>
-        <span id="maxtier-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Overstock Sale Banner -->
-    <div id="overstock-sale-banner" class="hidden bg-gradient-to-r from-lime-700 to-green-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-lime-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">📦 OVERSTOCK SALE! 50% OFF ALL "IN STOCK" ITEMS! 📦</span>
-        <span id="overstock-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Nether Sale Banner -->
-    <div id="nether-sale-banner" class="hidden bg-gradient-to-r from-red-800 to-orange-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🔥 NETHER EVENT! 50% OFF FIRE ENCHANTS! 🔥</span>
-        <span id="nether-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Anti-Meta Sale Banner -->
-    <div id="antimeta-sale-banner" class="hidden bg-gradient-to-r from-purple-800 to-green-700 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🕷️ ANTI-META BLOWOUT! 75% OFF SELECT ENCHANTS! 🕷️</span>
-        <span id="antimeta-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Bulk Bonus Banner -->
-    <div id="bulk-sale-banner" class="hidden bg-gradient-to-r from-yellow-600 to-lime-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-yellow-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🛒 BULK BONUS! 50% OFF ENTIRE ORDER (MIN 5 ITEMS)! 🛒</span>
-        <span id="bulk-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Buy 2 Get 1 Free Banner -->
-    <div id="b2g1-sale-banner" class="hidden bg-gradient-to-r from-pink-500 to-rose-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-pink-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🛍️ BUY 2 GET 1 FREE! (CHEAPEST ITEMS ARE FREE) 🛍️</span>
-        <span id="b2g1-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Flat Rate Diamond Banner -->
-    <div id="flatrate-sale-banner" class="hidden bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-cyan-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">💎 ABSOLUTE MADNESS! EVERY ITEM COSTS EXACTLY 1 DIAMOND! 💎</span>
-        <span id="flatrate-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- S-Tier Banner -->
-    <div id="stier-sale-banner" class="hidden bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-red-800 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">🔥 S-TIER MADNESS! ENCHANTS STARTING WITH 'S' ARE 90% OFF! 🔥</span>
-        <span id="stier-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Progressive Banner -->
-    <div id="progressive-sale-banner" class="hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-purple-900 z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-bounce inline-block">📈 PROGRESSIVE OVERLOAD! +10% OFF PER ITEM IN CART! 📈</span>
-        <span id="progressive-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
-
-    <!-- Peasant Uprising Banner -->
-    <div id="peasant-sale-banner" class="hidden bg-gradient-to-r from-gray-700 via-amber-800 to-gray-700 text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 border-black z-40 relative">
-        <span class="mc-font text-xl text-shadow animate-pulse">⛏️ PEASANT UPRISING! COAL, COPPER, & IRON ITEMS ARE 100% FREE! ⛏️</span>
-        <span id="peasant-sale-timer" class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none">05:00</span>
-    </div>
+    <!-- Active Event Banners Container -->
+    <div id="active-events-container" class="flex flex-col z-40 relative w-full"></div>
 
     <!-- Shipping Banner -->
     <div class="bg-[#24133b] text-[#d0d0d0] text-sm md:text-base text-center py-2 border-b-4 border-[#141515] font-medium tracking-wide">
@@ -396,94 +268,95 @@
 
     <!-- Admin Panel Modal -->
     <div id="admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-        <div class="mc-panel p-6 max-w-md w-full">
+        <div class="mc-panel p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6 border-b-4 border-[#141515] pb-4">
                 <h3 class="text-2xl font-bold text-[#ffaa00] text-shadow mc-font">Admin Terminal</h3>
                 <button onclick="closeAdminModal()" class="text-[#a8a8a8] hover:text-white font-bold text-xl font-sans">X</button>
             </div>
             
-            <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                <!-- Flash Sale Control -->
-                <div>
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Flash Sale Control</h4>
-                    <button onclick="adminStartFlashSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">
-                        ⚠️ Start Global Sale ⚠️
+            <div class="space-y-6">
+                <!-- User Order Management -->
+                <div class="border-b-2 border-[#535456] pb-4 mb-4">
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Customer Management</h4>
+                    <button onclick="rollbackLocalOrder()" class="w-full py-2 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffaa00]">
+                        ⏪ Rollback 1 Order from Daily Limit
                     </button>
                 </div>
 
                 <!-- Stock Management Control -->
-                <div class="border-t-2 border-[#535456] pt-4">
+                <div class="border-b-2 border-[#535456] pb-4 mb-4">
                     <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Manage Stock</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Toggle the "In Stock" badge on items.</p>
-                    <select id="admin-item-select" class="w-full mc-input p-2 mb-3 text-lg font-medium bg-[#1a1a1a]" onchange="updateStockButtonState()">
-                        <!-- Options injected via JS -->
-                    </select>
-                    <button id="admin-stock-btn" onclick="toggleItemStock()" class="w-full py-2 text-lg font-bold mc-btn mc-font tracking-wider">
-                        Toggle Stock
-                    </button>
+                    <select id="admin-item-select" class="w-full mc-input p-2 mb-3 text-lg font-medium bg-[#1a1a1a]" onchange="updateStockButtonState()"></select>
+                    <button id="admin-stock-btn" onclick="toggleItemStock()" class="w-full py-2 text-lg font-bold mc-btn mc-font tracking-wider">Toggle Stock</button>
                 </div>
 
-                <!-- BOGO Sale Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">BOGO 75% Off Sale</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Buy 1 Get 1 75% Off. Excludes Tier I items (like Mending) from being discounted.</p>
-                    <button onclick="adminStartBogoSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ff55]">
-                        🎁 Start BOGO Sale 🎁
-                    </button>
-                </div>
-
-                <!-- Free Shipping Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Free Delivery Event</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">Waives the 1 Emerald shipping fee for all orders.</p>
-                    <button onclick="adminStartFreeShipping()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ffff]">
-                        🚀 Start Free Delivery Event 🚀
-                    </button>
-                </div>
-
-                <!-- Armor Sale Control -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Armor Event</h4>
-                    <p class="text-sm text-[#a8a8a8] mb-2">50% off all Armor enchantments.</p>
-                    <button onclick="adminStartArmorSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#a824e3]">
-                        🛡️ Start Armor Sale 🛡️
-                    </button>
-                </div>
-
-                <!-- NEW: 10 Admin Sales Controls -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4 grid grid-cols-1 gap-4 pb-4">
-                    <button onclick="adminStartWeaponSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">⚔️ Start Weapon Sale</button>
-                    <button onclick="adminStartRangedSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ff55]">🏹 Start Ranged Sale</button>
-                    <button onclick="adminStartToolSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffaa00]">⛏️ Start Tool Sale</button>
-                    <button onclick="adminStartDiamondSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ffff]">💎 Start Diamond Rush</button>
-                    <button onclick="adminStartGoldSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffff55]">🧈 Start Gold Rush</button>
-                    <button onclick="adminStartIronSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffffff]">⛓️ Start Iron Rush</button>
-                    <button onclick="adminStartLapisSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#5555ff]">🔷 Lapis Liquidation</button>
-                    <button onclick="adminStartTier1Sale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">💥 Tier I Blowout</button>
-                    <button onclick="adminStartMaxTierSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aa00aa]">🔥 Max Tier Madness</button>
-                    <button onclick="adminStartOverstockSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#00aa00]">📦 Overstock Sale</button>
-                </div>
-
-                <!-- Special Themed Events -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4 grid grid-cols-1 gap-4 pb-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Special Themed Events</h4>
-                    <button onclick="adminStartNetherSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff5555]">🔥 Start Nether Event</button>
-                    <button onclick="adminStartAntiMetaSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aa00aa]">🕷️ Start Anti-Meta Sale</button>
-                    <button onclick="adminStartBulkSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffff55]">🛒 Start Bulk Bonus</button>
-                    <button onclick="adminStartB2G1Sale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">🛍️ Start Buy 2 Get 1 Free</button>
-                </div>
-                
-                <!-- Crazy Events -->
-                <div class="border-t-2 border-[#535456] pt-4 mt-4 grid grid-cols-1 gap-4 pb-4">
-                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Crazy & Chaotic Events</h4>
-                    <button onclick="adminStartFlatRateSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#55ffff]">💎 1 Diamond Flat Rate</button>
-                    <button onclick="adminStartSTierSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ffaa00]">🔥 S-Tier Madness (90% Off)</button>
-                    <button onclick="adminStartProgressiveSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#ff55ff]">📈 Progressive Overload</button>
-                    <button onclick="adminStartPeasantSale()" class="w-full py-3 text-lg font-bold mc-btn mc-font tracking-wider text-[#aaaaaa]">⛏️ Peasant Uprising (Free)</button>
+                <!-- Sales Controls Grid -->
+                <div>
+                    <h4 class="text-xl font-bold text-white text-shadow-sm mb-2 mc-font">Trigger Events (5 Minutes)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="triggerSale('flash')" class="py-2 text-lg font-bold mc-btn mc-font text-[#ffaa00]">⚡ Flash Sale (Global)</button>
+                        <button onclick="triggerSale('bogo')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ff55]">🎁 BOGO 75% Off</button>
+                        <button onclick="triggerSale('shipping')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ffff]">🚀 Free Delivery</button>
+                        <button onclick="triggerSale('armor')" class="py-2 text-lg font-bold mc-btn mc-font text-[#a824e3]">🛡️ Armor Event</button>
+                        <button onclick="triggerSale('weapon')" class="py-2 text-lg font-bold mc-btn mc-font text-[#ff5555]">⚔️ Weapon Event</button>
+                        <button onclick="triggerSale('ranged')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ffff]">🏹 Ranged Event</button>
+                        <button onclick="triggerSale('tool')" class="py-2 text-lg font-bold mc-btn mc-font text-[#a8a8a8]">⛏️ Tool Event</button>
+                        <button onclick="triggerSale('diamond')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ffff]">💎 Diamond Rush</button>
+                        <button onclick="triggerSale('gold')" class="py-2 text-lg font-bold mc-btn mc-font text-[#ffaa00]">🏅 Gold Rush</button>
+                        <button onclick="triggerSale('iron')" class="py-2 text-lg font-bold mc-btn mc-font text-[#ffffff]">⛓️ Iron Rush</button>
+                        <button onclick="triggerSale('lapis')" class="py-2 text-lg font-bold mc-btn mc-font text-[#5555ff]">🔷 Lapis Liq.</button>
+                        <button onclick="triggerSale('tier1')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ff55]">🔰 Tier I Blowout</button>
+                        <button onclick="triggerSale('maxTier')" class="py-2 text-lg font-bold mc-btn mc-font text-[#ff5555]">🔥 Max Tier Madness</button>
+                        <button onclick="triggerSale('overstock')" class="py-2 text-lg font-bold mc-btn mc-font text-[#55ff55]">📦 Overstock Sale</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Firebase Initialization -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCN9lkBMMTaEk8FR4TKgBqcvDkVFtnDUrk",
+            authDomain: "weblox-1f8b0.firebaseapp.com",
+            projectId: "weblox-1f8b0",
+            storageBucket: "weblox-1f8b0.firebasestorage.app",
+            messagingSenderId: "765567900101",
+            appId: "1:765567900101:web:fa03494970c3019f1e93ac",
+            measurementId: "G-D7E2MT985J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Expose to global scope for any future script integrations
+        window.db = db;
+        window.auth = auth;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.onSnapshot = onSnapshot;
+
+        // Initialize Authentication for future cloud saving or interactions
+        async function initAuth() {
+            try {
+                // Since this uses a custom external Firebase project, the environment's custom token will fail.
+                // We bypass it and directly sign in anonymously to your specific database.
+                await signInAnonymously(auth);
+                console.log("Firebase initialized successfully with user ID:", auth.currentUser.uid);
+                
+                // Signal that auth is ready so the main script can start Firestore listeners
+                window.dispatchEvent(new Event('firebase-auth-ready'));
+            } catch (error) {
+                console.error("Firebase Auth Error:", error);
+            }
+        }
+        initAuth();
+    </script>
 
     <!-- Core UI Script (Loads instantly, even offline or locally) -->
     <script>
@@ -494,10 +367,28 @@
         const FLASH_SALE_WEBHOOK = "https://discord.com/api/webhooks/1527002711105732648/Dy5RIBLB54qy6Y98-nTtgw_Kwp_x2K63VJyclJxlFiRc84sWHk9LGZ4ifsR7I8FvXoGR";
 
         // ==========================================
-        // EVENT DURATION CONFIGURATION
+        // FIRESTORE REALTIME SYNC
         // ==========================================
-        const EVENT_DURATION_MINS = 5;
-        const EVENT_DURATION_MS = EVENT_DURATION_MINS * 60 * 1000;
+        window.addEventListener('firebase-auth-ready', () => {
+            if (!window.db) return;
+            
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+            const flashSaleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', 'flash_sale');
+            
+            window.onSnapshot(flashSaleRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.endTime) {
+                        activeEvents.flash.end = new Date(data.endTime);
+                        if (typeof checkAllSales === 'function') {
+                            checkAllSales(); // Force UI to update immediately
+                        }
+                    }
+                }
+            }, (err) => {
+                console.error("Firestore sync error:", err);
+            });
+        });
 
         // ==========================================
         // INVENTORY TRACKER:
@@ -571,14 +462,24 @@
         window.cart = []; 
         let cart = window.cart;
         const MAX_DAILY_ITEMS = 8;
-        window.isFlashSaleCurrentlyActive = false;
-        window.manualFlashSaleEndTime = null;
-        window.isBogoSaleCurrentlyActive = false;
-        window.manualBogoSaleEndTime = null;
-        window.isFreeShippingActive = false;
-        window.manualFreeShippingEndTime = null;
-        window.isArmorSaleActive = false;
-        window.manualArmorSaleEndTime = null;
+        
+        // Dynamic active events engine
+        const activeEvents = {
+            flash: { active: false, end: null, title: '⚡ FLASH SALE ACTIVE! 50% OFF ALL ENCHANTMENTS! ⚡', bg: 'from-red-600 to-yellow-500', border: 'border-red-800' },
+            bogo: { active: false, end: null, title: '🎁 BOGO 75% OFF ACTIVE! (Tier I Excluded) 🎁', bg: 'from-green-600 to-blue-500', border: 'border-green-800' },
+            shipping: { active: false, end: null, title: '🚀 FREE DELIVERY EVENT! 0 EMERALD SHIPPING FEE! 🚀', bg: 'from-blue-600 to-cyan-500', border: 'border-blue-800' },
+            armor: { active: false, end: null, title: '🛡️ ARMOR EVENT! 50% OFF ALL ARMOR ENCHANTS! 🛡️', bg: 'from-purple-600 to-indigo-500', border: 'border-purple-800' },
+            weapon: { active: false, end: null, title: '⚔️ WEAPON EVENT! 50% OFF ALL WEAPONS! ⚔️', bg: 'from-red-700 to-red-500', border: 'border-red-900' },
+            ranged: { active: false, end: null, title: '🏹 RANGED EVENT! 50% OFF ALL RANGED ITEMS! 🏹', bg: 'from-teal-600 to-teal-400', border: 'border-teal-800' },
+            tool: { active: false, end: null, title: '⛏️ TOOL EVENT! 50% OFF ALL TOOLS! ⛏️', bg: 'from-gray-600 to-gray-400', border: 'border-gray-800' },
+            diamond: { active: false, end: null, title: '💎 DIAMOND RUSH! 50% OFF ITEMS COSTING DIAMONDS! 💎', bg: 'from-cyan-600 to-blue-500', border: 'border-cyan-800' },
+            gold: { active: false, end: null, title: '🏅 GOLD RUSH! 50% OFF ITEMS COSTING GOLD! 🏅', bg: 'from-yellow-600 to-orange-500', border: 'border-yellow-800' },
+            iron: { active: false, end: null, title: '⛓️ IRON RUSH! 50% OFF ITEMS COSTING IRON! ⛓️', bg: 'from-gray-400 to-gray-200 text-black', border: 'border-gray-500' },
+            lapis: { active: false, end: null, title: '🔷 LAPIS LIQUIDATION! 50% OFF ITEMS COSTING LAPIS! 🔷', bg: 'from-blue-700 to-blue-500', border: 'border-blue-900' },
+            tier1: { active: false, end: null, title: '🔰 TIER I BLOWOUT! 75% OFF ALL TIER I ENCHANTS! 🔰', bg: 'from-green-500 to-lime-400 text-black', border: 'border-green-700' },
+            maxTier: { active: false, end: null, title: '🔥 MAX TIER MADNESS! 50% OFF TIER IV & V! 🔥', bg: 'from-red-800 to-orange-600', border: 'border-red-900' },
+            overstock: { active: false, end: null, title: '📦 OVERSTOCK SALE! 50% OFF "IN STOCK" ITEMS! 📦', bg: 'from-lime-600 to-green-500', border: 'border-lime-800' }
+        };
 
         // Dynamic UI coloring based on Material Type
         function getMaterialColor(material) {
@@ -598,98 +499,52 @@
         // Calculates sum totals of each currency block
         function calculateTotal() {
             const totals = {};
-            let shippingFee = window.isFreeShippingActive ? 0 : cart.length; 
+            let shippingFee = activeEvents.shipping.active ? 0 : cart.length; 
 
-            // --- Reset Discount Flags ---
-            cart.forEach(i => {
-                i.isBogoDiscounted = false;
-                i.isArmorDiscounted = false;
-                i.isWeaponDiscounted = false;
-                i.isRangedDiscounted = false;
-                i.isToolDiscounted = false;
-                i.isDiamondDiscounted = false;
-                i.isGoldDiscounted = false;
-                i.isIronDiscounted = false;
-                i.isLapisDiscounted = false;
-                i.isTier1Discounted = false;
-                i.isMaxTierDiscounted = false;
-                i.isOverstockDiscounted = false;
-                i.isNetherDiscounted = false;
-                i.isAntiMetaDiscounted = false;
-                i.isBulkDiscounted = false;
-                i.isB2G1Discounted = false;
-                i.isFlatRateDiscounted = false;
-                i.isSTierDiscounted = false;
-                i.isProgressiveDiscounted = false;
-                i.isPeasantDiscounted = false;
+            // --- Reset Discount Flags & Apply Best Discount ---
+            cart.forEach(item => {
+                item.isBogoDiscounted = false;
+                item.discountInfo = null;
+
+                const tier = item.price.split(':')[0].trim();
+                const materialStr = item.price.split(' ').slice(1).join(' ').toLowerCase();
+                let bestPct = 0;
+                let bestLabel = '';
+                let bestColor = '';
+
+                const apply = (pct, label, color) => {
+                    if (pct > bestPct) {
+                        bestPct = pct; bestLabel = label; bestColor = color;
+                    }
+                };
+
+                // Evaluate all active sales to find the biggest discount for this item
+                if (activeEvents.flash.active) apply(0.5, 'Flash Sale', '#ffaa00');
+                if (activeEvents.armor.active && item.category === 'Armor') apply(0.5, 'Armor Sale', '#a824e3');
+                if (activeEvents.weapon.active && item.category === 'Weapons') apply(0.5, 'Weapon Event', '#ff5555');
+                if (activeEvents.ranged.active && item.category === 'Ranged') apply(0.5, 'Ranged Event', '#55ffff');
+                if (activeEvents.tool.active && item.category === 'Tools & General') apply(0.5, 'Tool Event', '#a8a8a8');
+                if (activeEvents.diamond.active && materialStr.includes('diamond')) apply(0.5, 'Diamond Rush', '#55ffff');
+                if (activeEvents.gold.active && materialStr.includes('gold')) apply(0.5, 'Gold Rush', '#ffaa00');
+                if (activeEvents.iron.active && materialStr.includes('iron')) apply(0.5, 'Iron Rush', '#ffffff');
+                if (activeEvents.lapis.active && materialStr.includes('lapis')) apply(0.5, 'Lapis Liq.', '#5555ff');
+                if (activeEvents.tier1.active && tier === 'I') apply(0.75, 'Tier I Blowout', '#55ff55');
+                if (activeEvents.maxTier.active && (tier === 'IV' || tier === 'V')) apply(0.5, 'Max Tier', '#ff5555');
+                if (activeEvents.overstock.active && inStockItems.includes(`${item.name} ${tier}`)) apply(0.5, 'Overstock Sale', '#55ff55');
+
+                if (bestPct > 0) {
+                    item.discountInfo = { percent: bestPct, label: bestLabel, color: bestColor };
+                }
             });
 
-            // --- Dynamic Multi-Sale Evaluation (Applies if Flash Sale is NOT active) ---
-            if (!window.isFlashSaleCurrentlyActive) {
-                cart.forEach(item => {
-                    const parts = item.price.split(':');
-                    const tier = parts[0] ? parts[0].trim() : '';
-                    const priceStr = parts[1] ? parts[1].trim() : item.price;
-                    const mat = priceStr.split(' ').slice(1).join(' ');
-
-                    if (window.isArmorSaleActive && item.category === 'Armor') item.isArmorDiscounted = true;
-                    if (window.isWeaponSaleActive && item.category === 'Weapons') item.isWeaponDiscounted = true;
-                    if (window.isRangedSaleActive && item.category === 'Ranged') item.isRangedDiscounted = true;
-                    if (window.isToolSaleActive && item.category === 'Tools & General') item.isToolDiscounted = true;
-                    if (window.isDiamondSaleActive && mat === 'Diamonds') item.isDiamondDiscounted = true;
-                    if (window.isGoldSaleActive && mat === 'Gold') item.isGoldDiscounted = true;
-                    if (window.isIronSaleActive && mat === 'Iron') item.isIronDiscounted = true;
-                    if (window.isLapisSaleActive && mat === 'Lapis') item.isLapisDiscounted = true;
-                    if (window.isTier1SaleActive && tier === 'I') item.isTier1Discounted = true;
-                    if (window.isMaxTierSaleActive && (tier === 'IV' || tier === 'V')) item.isMaxTierDiscounted = true;
-                    if (window.isOverstockSaleActive && inStockItems.includes(`${item.name} ${tier}`)) item.isOverstockDiscounted = true;
-                    
-                    if (window.isNetherSaleActive && ['Fire Protection', 'Fire Aspect', 'Flame'].includes(item.name)) item.isNetherDiscounted = true;
-                    if (window.isAntiMetaSaleActive && ['Smite', 'Bane of Arthropods', 'Knockback', 'Punch', 'Lure', 'Thorns'].includes(item.name)) item.isAntiMetaDiscounted = true;
-                    
-                    // Crazy Overrides
-                    if (window.isFlatRateDiamondActive) item.isFlatRateDiscounted = true;
-                    if (window.isSTierMadnessActive && item.name.startsWith('S')) item.isSTierDiscounted = true;
-                    if (window.isPeasantUprisingActive && ['Coal', 'Copper', 'Iron'].includes(mat)) item.isPeasantDiscounted = true;
-                    if (window.isProgressiveOverloadActive) item.isProgressiveDiscounted = true;
-                });
-                
-                // Bulk Buyer Bonus Check
-                if (window.isBulkSaleActive && cart.length >= 5) {
-                    cart.forEach(item => item.isBulkDiscounted = true);
-                }
-
-                // Buy 2 Get 1 Free Check
-                if (window.isB2G1SaleActive) {
-                    let freeCredits = Math.floor(cart.length / 3);
-                    let eligibleItems = cart.map((item, index) => ({ item, index }));
-                        
-                    eligibleItems.forEach(obj => {
-                        const priceStr = obj.item.price.split(':')[1] || obj.item.price;
-                        obj.parsedAmount = parseInt(priceStr.trim().split(' ')[0]) || 0;
-                    });
-                    // Sort ascending to make the cheapest items free
-                    eligibleItems.sort((a, b) => a.parsedAmount - b.parsedAmount);
-                    
-                    let discountsApplied = 0;
-                    for (let obj of eligibleItems) {
-                        if (discountsApplied < freeCredits) {
-                            cart[obj.index].isB2G1Discounted = true;
-                            discountsApplied++;
-                        }
-                    }
-                }
-            }
-
-            // --- Calculate BOGO (Applies if Flash Sale is NOT active) ---
-            if (window.isBogoSaleCurrentlyActive && !window.isFlashSaleCurrentlyActive) {
+            // --- Calculate BOGO ---
+            if (activeEvents.bogo.active) {
                 let bogoCredits = Math.floor(cart.length / 2);
                 
-                // Exclude Tier I items AND items already heavily discounted by Armor Sale
+                // Exclude Tier I items AND items already discounted by other events
                 let eligibleItems = cart.map((item, index) => ({ item, index }))
-                    .filter(obj => !obj.item.price.startsWith('I:') && !obj.item.isArmorDiscounted); 
+                    .filter(obj => !obj.item.price.startsWith('I:') && !obj.item.discountInfo); 
                     
-                // Sort ascending by cost so we discount the cheapest eligible items
                 eligibleItems.forEach(obj => {
                     const priceStr = obj.item.price.split(':')[1] || obj.item.price;
                     obj.parsedAmount = parseInt(priceStr.trim().split(' ')[0]) || 0;
@@ -718,34 +573,11 @@
 
                     if (!isNaN(amount) && material) {
                         let finalAmount = amount;
-                        // --- FLASH SALE DISCOUNT (50% OFF ITEMS) ---
-                        if (window.isFlashSaleCurrentlyActive) {
-                            finalAmount = Math.max(1, Math.ceil(amount / 2)); 
-                        } 
-                        // --- CRAZY OVERRIDES ---
-                        else if (item.isFlatRateDiscounted) {
-                            finalAmount = 1;
-                            material = "Diamonds"; // Override material cost entirely!
-                        }
-                        // --- 100% OFF DISCOUNTS ---
-                        else if (item.isB2G1Discounted || item.isPeasantDiscounted) {
-                            finalAmount = 0; 
-                        }
-                        // --- 90% OFF DISCOUNTS ---
-                        else if (item.isSTierDiscounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount * 0.10));
-                        }
-                        // --- 75% OFF DISCOUNTS ---
-                        else if (item.isBogoDiscounted || item.isTier1Discounted || item.isAntiMetaDiscounted) {
+                        
+                        if (item.discountInfo) {
+                            finalAmount = Math.max(1, Math.ceil(amount * (1 - item.discountInfo.percent)));
+                        } else if (item.isBogoDiscounted) {
                             finalAmount = Math.max(1, Math.ceil(amount * 0.25)); 
-                        }
-                        // --- DYNAMIC SCALING DISCOUNTS ---
-                        else if (item.isProgressiveDiscounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount * (1 - (cart.length * 0.10))));
-                        }
-                        // --- 50% OFF DISCOUNTS ---
-                        else if (item.isArmorDiscounted || item.isWeaponDiscounted || item.isRangedDiscounted || item.isToolDiscounted || item.isDiamondDiscounted || item.isGoldDiscounted || item.isIronDiscounted || item.isLapisDiscounted || item.isMaxTierDiscounted || item.isOverstockDiscounted || item.isNetherDiscounted || item.isBulkDiscounted) {
-                            finalAmount = Math.max(1, Math.ceil(amount / 2));
                         }
                         
                         totals[material] = (totals[material] || 0) + finalAmount;
@@ -848,67 +680,17 @@
                 let displayPrice = priceText;
                 let bogoBadge = '';
                 
-                if (window.isFlashSaleCurrentlyActive) {
+                if (i.discountInfo) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt / 2));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">Flash: ${discountedAmt} ${mat}</span>`;
-                } else if (i.isB2G1Discounted) {
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff55ff]">B2G1: FREE</span>`;
-                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#ff55ff] text-black px-1.5 py-0.5 border border-[#aa22aa] shadow-sm uppercase font-bold tracking-widest">100% OFF</span>`;
-                } else if (i.isAntiMetaDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#aa00aa]">Anti-Meta: ${discountedAmt} ${mat}</span>`;
-                } else if (i.isTier1Discounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff5555]">Tier I Blowout: ${discountedAmt} ${mat}</span>`;
-                } else if (i.isFlatRateDiscounted) {
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ffff]">Flat Rate: 1 Diamond</span>`;
-                } else if (i.isPeasantDiscounted) {
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#aaaaaa]">Peasant Uprising: FREE</span>`;
-                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#aaaaaa] text-black px-1.5 py-0.5 border border-[#555555] shadow-sm uppercase font-bold tracking-widest">100% OFF</span>`;
-                } else if (i.isSTierDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt * 0.10));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ffaa00]">S-Tier: ${discountedAmt} ${mat}</span>`;
-                     bogoBadge = `<span class="ml-2 text-[10px] bg-[#ffaa00] text-black px-1.5 py-0.5 border border-[#aa5500] shadow-sm uppercase font-bold tracking-widest">90% OFF</span>`;
-                } else if (i.isProgressiveDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const percentOff = cart.length * 10;
-                     const discountedAmt = Math.max(1, Math.ceil(amt * (1 - (cart.length * 0.10))));
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#ff5555]">Scaling (-${percentOff}%): ${discountedAmt} ${mat}</span>`;
+                     const discountedAmt = Math.max(1, Math.ceil(amt * (1 - i.discountInfo.percent)));
+                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span style="color: ${i.discountInfo.color}">${i.discountInfo.label}: ${discountedAmt} ${mat}</span>`;
                 } else if (i.isBogoDiscounted) {
                      const amt = parseInt(priceText.split(' ')[0]);
                      const mat = priceText.split(' ').slice(1).join(' ');
                      const discountedAmt = Math.max(1, Math.ceil(amt * 0.25));
                      displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ff55]">BOGO: ${discountedAmt} ${mat}</span>`;
                      bogoBadge = `<span class="ml-2 text-[10px] bg-[#55ff55] text-black px-1.5 py-0.5 border border-[#22aa22] shadow-sm uppercase font-bold tracking-widest">75% OFF</span>`;
-                } else if (i.isArmorDiscounted || i.isWeaponDiscounted || i.isRangedDiscounted || i.isToolDiscounted || i.isDiamondDiscounted || i.isGoldDiscounted || i.isIronDiscounted || i.isLapisDiscounted || i.isMaxTierDiscounted || i.isOverstockDiscounted || i.isNetherDiscounted || i.isBulkDiscounted) {
-                     const amt = parseInt(priceText.split(' ')[0]);
-                     const mat = priceText.split(' ').slice(1).join(' ');
-                     const discountedAmt = Math.max(1, Math.ceil(amt / 2));
-                     
-                     let label = "Sale";
-                     if(i.isArmorDiscounted) label = "Armor Event";
-                     else if(i.isWeaponDiscounted) label = "Weapon Event";
-                     else if(i.isRangedDiscounted) label = "Ranged Event";
-                     else if(i.isToolDiscounted) label = "Tool Event";
-                     else if(i.isDiamondDiscounted) label = "Diamond Rush";
-                     else if(i.isGoldDiscounted) label = "Gold Rush";
-                     else if(i.isIronDiscounted) label = "Iron Rush";
-                     else if(i.isLapisDiscounted) label = "Lapis Liquidation";
-                     else if(i.isMaxTierDiscounted) label = "Max Tier Madness";
-                     else if(i.isOverstockDiscounted) label = "Overstock Sale";
-                     else if(i.isNetherDiscounted) label = "Nether Event";
-                     else if(i.isBulkDiscounted) label = "Bulk Bonus";
-
-                     displayPrice = `<span class="line-through text-[#888] text-sm mr-1">${priceText}</span> <span class="text-[#55ffff]">${label}: ${discountedAmt} ${mat}</span>`;
                 }
 
                 return `
@@ -943,7 +725,7 @@
             const shippingFeeDisplay = document.getElementById('shipping-fee-display');
             if (shippingFeeDisplay) {
                 const fee = cart.length;
-                if (window.isFreeShippingActive) {
+                if (activeEvents.shipping.active) {
                     shippingFeeDisplay.innerHTML = `<span class="line-through text-[#888] mr-2">${fee} Emerald${fee !== 1 ? 's' : ''}</span><span class="text-[#55ffff]">FREE</span>`;
                 } else {
                     shippingFeeDisplay.innerText = `+${fee} Emerald${fee !== 1 ? 's' : ''}`;
@@ -1058,57 +840,22 @@
                 : "0 Items";
 
             const itemList = cart.map(i => `- **${i.name}** (${i.price})`).join('\n');
-            const fee = window.isFreeShippingActive ? 0 : cart.length;
+            const fee = activeEvents.shipping.active ? 0 : cart.length;
             const feeText = fee === 0 ? "FREE Delivery Event" : `+${fee} Emeralds shipping fee`;
             
             let receiptText = `🚨 **New Enchantment Order!** 🚨\n**Customer:** \`${name}\`\n**Discord Contact:** ${discordName}\n**Items Ordered:**\n${itemList}\n\n🛒 **Total Cost:** ${totalString}\n*(${feeText})*`;
 
-            if (window.isFlashSaleCurrentlyActive) {
-                receiptText += `\n\n⚡ **BOUGHT DURING FLASH SALE (50% OFF APPLIED)** ⚡`;
-            } else {
-                if (window.isArmorSaleActive) {
-                    let armorCount = cart.filter(i => i.isArmorDiscounted).length;
-                    if (armorCount > 0) {
-                        receiptText += `\n🛡️ **BOUGHT DURING ARMOR EVENT (${armorCount} ITEM(S) 50% OFF)** 🛡️`;
-                    }
-                }
-                if (window.isBogoSaleCurrentlyActive) {
-                    let discountedCount = cart.filter(i => i.isBogoDiscounted).length;
-                    if (discountedCount > 0) {
-                        receiptText += `\n🎁 **BOUGHT DURING BOGO SALE (${discountedCount} ITEM(S) 75% OFF)** 🎁`;
-                    }
-                }
-                
-                // Track dynamic sales for receipts
-                const activeNewSales = [
-                    { state: window.isWeaponSaleActive, flag: 'isWeaponDiscounted', emoji: '⚔️', name: 'WEAPON EVENT', off: '50%' },
-                    { state: window.isRangedSaleActive, flag: 'isRangedDiscounted', emoji: '🏹', name: 'RANGED EVENT', off: '50%' },
-                    { state: window.isToolSaleActive, flag: 'isToolDiscounted', emoji: '⛏️', name: 'TOOL EVENT', off: '50%' },
-                    { state: window.isDiamondSaleActive, flag: 'isDiamondDiscounted', emoji: '💎', name: 'DIAMOND RUSH', off: '50%' },
-                    { state: window.isGoldSaleActive, flag: 'isGoldDiscounted', emoji: '🧈', name: 'GOLD RUSH', off: '50%' },
-                    { state: window.isIronSaleActive, flag: 'isIronDiscounted', emoji: '⛓️', name: 'IRON RUSH', off: '50%' },
-                    { state: window.isLapisSaleActive, flag: 'isLapisDiscounted', emoji: '🔷', name: 'LAPIS LIQUIDATION', off: '50%' },
-                    { state: window.isTier1SaleActive, flag: 'isTier1Discounted', emoji: '💥', name: 'TIER I BLOWOUT', off: '75%' },
-                    { state: window.isMaxTierSaleActive, flag: 'isMaxTierDiscounted', emoji: '🔥', name: 'MAX TIER MADNESS', off: '50%' },
-                    { state: window.isOverstockSaleActive, flag: 'isOverstockDiscounted', emoji: '📦', name: 'OVERSTOCK SALE', off: '50%' },
-                    { state: window.isNetherSaleActive, flag: 'isNetherDiscounted', emoji: '🔥', name: 'NETHER EXPLORER EVENT', off: '50%' },
-                    { state: window.isAntiMetaSaleActive, flag: 'isAntiMetaDiscounted', emoji: '🕷️', name: 'ANTI-META BLOWOUT', off: '75%' },
-                    { state: window.isBulkSaleActive, flag: 'isBulkDiscounted', emoji: '🛒', name: 'BULK BUYER BONUS', off: '50%' },
-                    { state: window.isB2G1SaleActive, flag: 'isB2G1Discounted', emoji: '🛍️', name: 'BUY 2 GET 1 FREE', off: '100%' },
-                    { state: window.isFlatRateDiamondActive, flag: 'isFlatRateDiscounted', emoji: '💎', name: '1 DIAMOND FLAT RATE', off: 'Converted Pricing' },
-                    { state: window.isSTierMadnessActive, flag: 'isSTierDiscounted', emoji: '🔥', name: 'S-TIER MADNESS', off: '90%' },
-                    { state: window.isProgressiveOverloadActive, flag: 'isProgressiveDiscounted', emoji: '📈', name: 'PROGRESSIVE OVERLOAD', off: `${cart.length * 10}%` },
-                    { state: window.isPeasantUprisingActive, flag: 'isPeasantDiscounted', emoji: '⛏️', name: 'PEASANT UPRISING', off: '100%' }
-                ];
+            let discountedEvents = new Set();
+            cart.forEach(i => {
+                if (i.discountInfo) discountedEvents.add(i.discountInfo.label);
+                if (i.isBogoDiscounted) discountedEvents.add('BOGO 75% OFF');
+            });
 
-                activeNewSales.forEach(s => {
-                    if (s.state) {
-                        let count = cart.filter(i => i[s.flag]).length;
-                        if (count > 0) receiptText += `\n${s.emoji} **BOUGHT DURING ${s.name} (${count} ITEM(S) ${s.off} OFF)** ${s.emoji}`;
-                    }
-                });
+            if (discountedEvents.size > 0) {
+                receiptText += `\n\n🎉 **APPLIED DISCOUNTS: ${Array.from(discountedEvents).join(', ')}** 🎉`;
             }
-            if (window.isFreeShippingActive) {
+            
+            if (activeEvents.shipping.active) {
                 receiptText += `\n🚀 **BOUGHT DURING FREE DELIVERY EVENT (No Shipping Fees!)** 🚀`;
             }
 
@@ -1273,9 +1020,10 @@
         setInterval(spawnEnchantmentDust, 300);
         
         // ==========================================
-        // FLASH SALE LOGIC
+        // DYNAMIC EVENTS & SALES LOGIC
         // ==========================================
 
+        // ONLY Flash Sales have a deterministic weekly schedule
         function getFlashSaleWindow() {
             const now = new Date();
             // Start of current week (Sunday 00:00)
@@ -1298,209 +1046,87 @@
             start.setDate(start.getDate() + dayOffset);
             start.setHours(hourOffset, minuteOffset, 0, 0);
 
-            const end = new Date(start.getTime() + EVENT_DURATION_MS); // exactly 5 minutes later
+            const end = new Date(start.getTime() + 5 * 60 * 1000); // exactly 5 minutes later
             
             return { start, end, weekId: seed };
         }
 
-        function checkFlashSale() {
+        function checkAllSales() {
+            const now = new Date();
+            let needsCartUpdate = false;
+            let activeHtml = '';
+
+            // Handle Flash Sale separately because of deterministic scheduling + Manual Trigger overrides
             const windowData = getFlashSaleWindow();
-            const now = new Date();
+            const isFlashScheduled = now >= windowData.start && now < windowData.end;
+            const isFlashManual = activeEvents.flash.end && now < activeEvents.flash.end;
             
-            const isScheduledActive = now >= windowData.start && now < windowData.end;
-            const isManualActive = window.manualFlashSaleEndTime && now < window.manualFlashSaleEndTime;
-            
-            if (isScheduledActive || isManualActive) {
-                if (!window.isFlashSaleCurrentlyActive) {
-                    window.isFlashSaleCurrentlyActive = true;
-                    document.getElementById('flash-sale-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                
-                // Update countdown timer
-                const activeEndTime = isManualActive ? window.manualFlashSaleEndTime : windowData.end;
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((activeEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('flash-sale-timer').innerText = `${mins}:${secs}`;
-                
-            } else {
-                if (window.isFlashSaleCurrentlyActive) {
-                    showSimpleMessage("Flash sale ended, better luck next time!");
-                    window.isFlashSaleCurrentlyActive = false;
-                    document.getElementById('flash-sale-banner').classList.add('hidden');
-                    window.manualFlashSaleEndTime = null; // reset manual state
-                    updateCart(); // Reset cart UI to normal prices
-                }
+            const flashActive = !!(isFlashScheduled || isFlashManual);
+            if (activeEvents.flash.active !== flashActive) {
+                const wasActive = activeEvents.flash.active;
+                activeEvents.flash.active = flashActive;
+                needsCartUpdate = true;
+                if (wasActive === true && !flashActive) showSimpleMessage("Flash sale ended!");
             }
-        }
-
-        function checkBogoSale() {
-            const now = new Date();
-            const isManualActive = window.manualBogoSaleEndTime && now < window.manualBogoSaleEndTime;
-            
-            if (isManualActive) {
-                if (!window.isBogoSaleCurrentlyActive) {
-                    window.isBogoSaleCurrentlyActive = true;
-                    document.getElementById('bogo-sale-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualBogoSaleEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('bogo-sale-timer').innerText = `${mins}:${secs}`;
-                
-            } else {
-                if (window.isBogoSaleCurrentlyActive) {
-                    showSimpleMessage("BOGO sale ended, better luck next time!");
-                    window.isBogoSaleCurrentlyActive = false;
-                    document.getElementById('bogo-sale-banner').classList.add('hidden');
-                    window.manualBogoSaleEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
-        // Start checking for flash sales every second
-        setInterval(checkFlashSale, 1000);
-        checkFlashSale(); // Initial check
-
-        setInterval(checkBogoSale, 1000);
-        checkBogoSale();
-
-        function checkFreeShipping() {
-            const now = new Date();
-            const isManualActive = window.manualFreeShippingEndTime && now < window.manualFreeShippingEndTime;
-            
-            if (isManualActive) {
-                if (!window.isFreeShippingActive) {
-                    window.isFreeShippingActive = true;
-                    document.getElementById('free-shipping-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualFreeShippingEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('free-shipping-timer').innerText = `${mins}:${secs}`;
-            } else {
-                if (window.isFreeShippingActive) {
-                    showSimpleMessage("Free Delivery event ended!");
-                    window.isFreeShippingActive = false;
-                    document.getElementById('free-shipping-banner').classList.add('hidden');
-                    window.manualFreeShippingEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
-        function checkArmorSale() {
-            const now = new Date();
-            const isManualActive = window.manualArmorSaleEndTime && now < window.manualArmorSaleEndTime;
-            
-            if (isManualActive) {
-                if (!window.isArmorSaleActive) {
-                    window.isArmorSaleActive = true;
-                    document.getElementById('armor-sale-banner').classList.remove('hidden');
-                    updateCart(); 
-                }
-                const MathFloor = Math.floor;
-                const timeLeft = MathFloor((window.manualArmorSaleEndTime - now) / 1000);
-                const mins = String(MathFloor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('armor-sale-timer').innerText = `${mins}:${secs}`;
-            } else {
-                if (window.isArmorSaleActive) {
-                    showSimpleMessage("Armor Event ended!");
-                    window.isArmorSaleActive = false;
-                    document.getElementById('armor-sale-banner').classList.add('hidden');
-                    window.manualArmorSaleEndTime = null;
-                    updateCart();
-                }
-            }
-        }
-
-        setInterval(checkFreeShipping, 1000);
-        checkFreeShipping();
-        
-        setInterval(checkArmorSale, 1000);
-        checkArmorSale();
-
-        // ==========================================
-        // DYNAMIC ADMIN SALES ENGINE
-        // ==========================================
-        const newSalesConfig = [
-            { id: 'Weapon', name: 'Weapon Event', emoji: '⚔️', msg: 'All Weapon enchants are 50% OFF! Hurry!', state: 'isWeaponSaleActive', end: 'manualWeaponSaleEndTime', banner: 'weapon-sale-banner', timer: 'weapon-sale-timer' },
-            { id: 'Ranged', name: 'Ranged Event', emoji: '🏹', msg: 'All Ranged enchants are 50% OFF! Hurry!', state: 'isRangedSaleActive', end: 'manualRangedSaleEndTime', banner: 'ranged-sale-banner', timer: 'ranged-sale-timer' },
-            { id: 'Tool', name: 'Tool Event', emoji: '⛏️', msg: 'All Tool & General enchants are 50% OFF! Hurry!', state: 'isToolSaleActive', end: 'manualToolSaleEndTime', banner: 'tool-sale-banner', timer: 'tool-sale-timer' },
-            { id: 'Diamond', name: 'Diamond Rush', emoji: '💎', msg: 'All Diamond costs are 50% OFF! Hurry!', state: 'isDiamondSaleActive', end: 'manualDiamondSaleEndTime', banner: 'diamond-sale-banner', timer: 'diamond-sale-timer' },
-            { id: 'Gold', name: 'Gold Rush', emoji: '🧈', msg: 'All Gold costs are 50% OFF! Hurry!', state: 'isGoldSaleActive', end: 'manualGoldSaleEndTime', banner: 'gold-sale-banner', timer: 'gold-sale-timer' },
-            { id: 'Iron', name: 'Iron Rush', emoji: '⛓️', msg: 'All Iron costs are 50% OFF! Hurry!', state: 'isIronSaleActive', end: 'manualIronSaleEndTime', banner: 'iron-sale-banner', timer: 'iron-sale-timer' },
-            { id: 'Lapis', name: 'Lapis Liquidation', emoji: '🔷', msg: 'All Lapis costs are 50% OFF! Hurry!', state: 'isLapisSaleActive', end: 'manualLapisSaleEndTime', banner: 'lapis-sale-banner', timer: 'lapis-sale-timer' },
-            { id: 'Tier1', name: 'Tier I Blowout', emoji: '💥', msg: 'All Tier I enchants are 75% OFF! Hurry!', state: 'isTier1SaleActive', end: 'manualTier1SaleEndTime', banner: 'tier1-sale-banner', timer: 'tier1-sale-timer' },
-            { id: 'MaxTier', name: 'Max Tier Madness', emoji: '🔥', msg: 'All Tier IV & V enchants are 50% OFF! Hurry!', state: 'isMaxTierSaleActive', end: 'manualMaxTierSaleEndTime', banner: 'maxtier-sale-banner', timer: 'maxtier-sale-timer' },
-            { id: 'Overstock', name: 'Overstock Sale', emoji: '📦', msg: 'All In-Stock enchants are 50% OFF! Hurry!', state: 'isOverstockSaleActive', end: 'manualOverstockSaleEndTime', banner: 'overstock-sale-banner', timer: 'overstock-sale-timer' },
-            { id: 'Nether', name: 'Nether Explorer Event', emoji: '🔥', msg: 'Fire Protection, Fire Aspect, and Flame are 50% OFF!', state: 'isNetherSaleActive', end: 'manualNetherSaleEndTime', banner: 'nether-sale-banner', timer: 'nether-sale-timer' },
-            { id: 'AntiMeta', name: 'Anti-Meta Blowout', emoji: '🕷️', msg: 'Smite, Bane of Arthropods, Knockback, Punch, Lure, and Thorns are 75% OFF!', state: 'isAntiMetaSaleActive', end: 'manualAntiMetaSaleEndTime', banner: 'antimeta-sale-banner', timer: 'antimeta-sale-timer' },
-            { id: 'Bulk', name: 'Bulk Buyer Bonus', emoji: '🛒', msg: 'Buy 5 or more items to get 50% OFF your entire order!', state: 'isBulkSaleActive', end: 'manualBulkSaleEndTime', banner: 'bulk-sale-banner', timer: 'bulk-sale-timer' },
-            { id: 'B2G1', name: 'Buy 2 Get 1 FREE', emoji: '🛍️', msg: 'For every 3 items, the cheapest 1 is absolutely FREE!', state: 'isB2G1SaleActive', end: 'manualB2G1SaleEndTime', banner: 'b2g1-sale-banner', timer: 'b2g1-sale-timer' },
-            { id: 'FlatRate', name: '1 Diamond Flat Rate', emoji: '💎', msg: 'Absolute Madness! EVERY item in the store costs exactly 1 Diamond!', state: 'isFlatRateDiamondActive', end: 'manualFlatRateDiamondEndTime', banner: 'flatrate-sale-banner', timer: 'flatrate-sale-timer' },
-            { id: 'STier', name: 'S-Tier Madness', emoji: '🔥', msg: 'Sharpness, Smite, Sweeping Edge, Silk Touch, Swift Sneak... If it starts with S, it\'s 90% OFF!', state: 'isSTierMadnessActive', end: 'manualSTierMadnessEndTime', banner: 'stier-sale-banner', timer: 'stier-sale-timer' },
-            { id: 'Progressive', name: 'Progressive Overload', emoji: '📈', msg: '1 item = 10% off. 8 items = 80% off your ENTIRE order! Add more to save more!', state: 'isProgressiveOverloadActive', end: 'manualProgressiveOverloadEndTime', banner: 'progressive-sale-banner', timer: 'progressive-sale-timer' },
-            { id: 'Peasant', name: 'Peasant Uprising', emoji: '⛏️', msg: 'Power to the players! All enchantments costing Coal, Copper, or Iron are 100% FREE!', state: 'isPeasantUprisingActive', end: 'manualPeasantUprisingEndTime', banner: 'peasant-sale-banner', timer: 'peasant-sale-timer' }
-        ];
-
-        newSalesConfig.forEach(s => {
-            window[s.state] = false;
-            window[s.end] = null;
-            
-            // Loop checker to control countdown and state
-            const checkFn = function() {
-                const now = new Date();
-                const isManualActive = window[s.end] && now < window[s.end];
-                if (isManualActive) {
-                    if (!window[s.state]) {
-                        window[s.state] = true;
-                        document.getElementById(s.banner).classList.remove('hidden');
-                        updateCart();
-                    }
-                    const timeLeft = Math.floor((window[s.end] - now) / 1000);
-                    document.getElementById(s.timer).innerText = `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`;
+            if (flashActive) {
+                // Determine which timer to show if both are running simultaneously
+                let activeEndTime;
+                if (isFlashManual && isFlashScheduled) {
+                    activeEndTime = activeEvents.flash.end > windowData.end ? activeEvents.flash.end : windowData.end;
+                } else if (isFlashManual) {
+                    activeEndTime = activeEvents.flash.end;
                 } else {
-                    if (window[s.state]) {
-                        showSimpleMessage(`${s.name} ended!`);
-                        window[s.state] = false;
-                        document.getElementById(s.banner).classList.add('hidden');
-                        window[s.end] = null;
-                        updateCart();
-                    }
+                    activeEndTime = windowData.end;
                 }
-            };
-            
-            setInterval(checkFn, 1000);
-            checkFn(); // Intitial check
 
-            // Trigger mapping for the HTML buttons
-            window[`adminStart${s.id}Sale`] = function() {
-                closeAdminModal();
-                showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute ${s.name}!`);
-                window[s.end] = new Date(new Date().getTime() + EVENT_DURATION_MS);
+                const timeLeft = Math.floor((activeEndTime - now) / 1000);
+                const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                const secs = String(timeLeft % 60).padStart(2, '0');
                 
-                fetch(FLASH_SALE_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: `${s.emoji} **${s.name.toUpperCase()} ALERT!** ${s.emoji}\nA ${EVENT_DURATION_MINS}-minute ${s.name} has started! ${s.msg}` })
-                }).catch(e => console.log("Webhook error:", e));
-                
-                checkFn(); // Force update UI immediately
-            };
-        });
+                activeHtml += `
+                    <div class="bg-gradient-to-r ${activeEvents.flash.bg} font-bold text-center py-3 px-4 shadow-lg border-b-4 ${activeEvents.flash.border} z-40 relative">
+                        <span class="mc-font text-xl text-shadow animate-pulse">${activeEvents.flash.title}</span>
+                        <span class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none text-white">${mins}:${secs}</span>
+                    </div>`;
+            }
+
+            // Handle all other dynamic sales (These are ONLY triggered manually by admins)
+            for (const [key, event] of Object.entries(activeEvents)) {
+                if (key === 'flash') continue; // Handled above
+
+                const isActive = !!(event.end && now < event.end);
+                if (event.active !== isActive) {
+                    const wasActive = event.active;
+                    event.active = isActive;
+                    needsCartUpdate = true;
+                    if (wasActive === true && !isActive) showSimpleMessage(`${event.title.split('!')[0]} ended!`);
+                }
+
+                if (isActive) {
+                    const timeLeft = Math.floor((event.end - now) / 1000);
+                    const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                    const secs = String(timeLeft % 60).padStart(2, '0');
+                    
+                    activeHtml += `
+                        <div class="bg-gradient-to-r ${event.bg} text-white font-bold text-center py-3 px-4 shadow-lg border-b-4 ${event.border} z-40 relative">
+                            <span class="mc-font text-xl text-shadow animate-pulse">${event.title}</span>
+                            <span class="ml-3 font-mono bg-black/60 px-2 py-1 rounded border border-[#141515] shadow-inner text-shadow-none text-white">${mins}:${secs}</span>
+                        </div>`;
+                }
+            }
+
+            document.getElementById('active-events-container').innerHTML = activeHtml;
+
+            if (needsCartUpdate) {
+                updateCart();
+            }
+        }
+
+        setInterval(checkAllSales, 1000);
+        checkAllSales();
 
         // ==========================================
-        // SECRET FLASH SALE TRIGGER (Easter Egg)
+        // SECRET ADMIN TRIGGER (Easter Egg)
         // ==========================================
         let keyBuffer = "";
         const SECRET_CODE = "07312012";
@@ -1545,7 +1171,6 @@
             const val = document.getElementById('admin-item-select').value;
             const btn = document.getElementById('admin-stock-btn');
             
-            // Check if the selected item is currently in stock
             if (inStockItems.includes(val)) {
                 btn.innerText = "Remove from Stock";
                 btn.style.color = "#ff5555"; // Red
@@ -1559,16 +1184,13 @@
             const val = document.getElementById('admin-item-select').value;
             
             if (inStockItems.includes(val)) {
-                // Remove from array
                 inStockItems = inStockItems.filter(i => i !== val);
             } else {
-                // Add to array
                 inStockItems.push(val);
             }
             
             updateStockButtonState();
             
-            // Re-render the UI so the badge updates instantly
             const activeCat = document.querySelector('#category-list .mc-btn')?.innerText || 'All';
             const searchInput = document.getElementById('search-input');
             const searchMobile = document.getElementById('search-input-mobile');
@@ -1577,108 +1199,64 @@
             renderProducts(activeCat, search);
         };
 
-        window.adminStartFlashSale = function() {
-            closeAdminModal();
-            if (window.triggerGlobalSale) {
-                window.triggerGlobalSale(); 
+        window.rollbackLocalOrder = function() {
+            let ordersToday = parseInt(localStorage.getItem('ordersToday')) || 0;
+            if (ordersToday > 0) {
+                localStorage.setItem('ordersToday', ordersToday - 1);
+                updateCart(); 
+                showSimpleMessage("⏪ Successfully rolled back 1 order from your daily limit.");
             } else {
-                triggerManualFlashSale(); 
+                showSimpleMessage("❌ No orders have been placed today to roll back.");
             }
         };
 
-        window.adminStartBogoSale = function() {
+        // Admins can trigger ANY sale manually, which activates it for 5 minutes.
+        window.triggerSale = async function(saleKey) {
             closeAdminModal();
-            triggerManualBogoSale(); 
-        };
+            const event = activeEvents[saleKey];
+            if (!event) return;
+            
+            const endTimeMs = new Date().getTime() + 5 * 60 * 1000; // 5 minutes
+            
+            // Special handling for Global Flash Sale Firestore sync
+            if (saleKey === 'flash') {
+                if (window.db && window.doc && window.setDoc) {
+                    try {
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'enchanting-shop';
+                        const flashSaleRef = window.doc(window.db, 'artifacts', appId, 'public', 'data', 'store_state', 'flash_sale');
+                        await window.setDoc(flashSaleRef, { endTime: endTimeMs });
+                    } catch (e) {
+                        console.error("Failed to sync sale to Firestore, applying locally:", e);
+                    }
+                }
+            }
 
-        window.adminStartFreeShipping = function() {
-            closeAdminModal();
-            triggerManualFreeShipping(); 
-        };
+            event.end = new Date(endTimeMs);
+            showSimpleMessage(`Event activated: ${event.title.split('!')[0]}`);
+            
+            fetch(FLASH_SALE_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    content: `🎉 **EVENT ALERT!** 🎉\n${event.title}\nActive for the next 5 minutes!` 
+                })
+            }).catch(err => console.log("Webhook error:", err));
 
-        window.adminStartArmorSale = function() {
-            closeAdminModal();
-            triggerManualArmorSale(); 
+            checkAllSales(); 
         };
 
         document.addEventListener('keydown', (e) => {
-            // Only listen to single characters to build the code
             if (e.key.length === 1) {
                 keyBuffer += e.key;
-                
-                // Keep the memory buffer small
                 if (keyBuffer.length > 20) {
                     keyBuffer = keyBuffer.slice(-20);
                 }
-                
-                // If the user types the secret code
                 if (keyBuffer.includes(SECRET_CODE)) {
-                    keyBuffer = ""; // Reset buffer so it doesn't trigger twice
-                    openAdminModal(); // Open the new admin panel
+                    keyBuffer = ""; 
+                    openAdminModal(); 
                 }
             }
         });
-
-        // Fallback local-only trigger function
-        function triggerManualFlashSale() {
-            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Flash Sale!`);
-            window.manualFlashSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: `⚡ **FLASH SALE ALERT!** ⚡\nA ${EVENT_DURATION_MINS}-minute Flash Sale has just started at the Enchanting Shop! Everything is 50% OFF right now! Hurry!` 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkFlashSale(); // Force immediate check
-        }
-
-        function triggerManualBogoSale() {
-            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute BOGO Sale!`);
-            window.manualBogoSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: `🎁 **BOGO SALE ALERT!** 🎁\nA ${EVENT_DURATION_MINS}-minute Buy 1 Get 1 75% OFF Sale has just started! (Excludes Tier I items like Mending). Hurry!` 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkBogoSale(); // Force immediate check
-        }
-
-        function triggerManualFreeShipping() {
-            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Free Delivery Event!`);
-            window.manualFreeShippingEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: `🚀 **FREE DELIVERY ALERT!** 🚀\nA ${EVENT_DURATION_MINS}-minute Free Delivery Event has started! 0 Emerald shipping fees for a limited time! Hurry!` 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkFreeShipping(); 
-        }
-
-        function triggerManualArmorSale() {
-            showSimpleMessage(`Secret code activated! Manually starting a local ${EVENT_DURATION_MINS}-minute Armor Sale!`);
-            window.manualArmorSaleEndTime = new Date(new Date().getTime() + EVENT_DURATION_MS);
-            
-            fetch(FLASH_SALE_WEBHOOK, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    content: `🛡️ **ARMOR EVENT ALERT!** 🛡️\nA ${EVENT_DURATION_MINS}-minute Armor Sale has started! All Armor enchantments are 50% OFF! Hurry!` 
-                })
-            }).catch(err => console.log("Webhook error:", err));
-
-            checkArmorSale(); 
-        }
 
     </script>
 </body>
